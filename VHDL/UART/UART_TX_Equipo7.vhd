@@ -16,7 +16,7 @@ END UART_TX_Equipo7;
 
 ARCHITECTURE Behavioral OF UART_TX_Equipo7 IS
 
-	SIGNAL	d_in_tmp		:		STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL	d_in_tmp			:		STD_LOGIC_VECTOR(7 DOWNTO 0);
 		
 BEGIN
 	
@@ -132,7 +132,4 @@ BEGIN
 		
 	END PROCESS;
 	
-END Behavioral;
-					
-				
-			
+END Behavioral;	
