@@ -5,12 +5,12 @@ USE	 	ieee.numeric_std.ALL;
 ENTITY	baudrate_gen	IS
 
 	GENERIC
-			(
+		(
 				-- M = clk_freq / baudrate, without oversampling
 				
 				M			:					integer	:= 434;		-- M = 50 MHz /  115200
 				N			:					integer	:= 9		-- Size of M
-			);
+		);
 	
 	PORT
 		(
