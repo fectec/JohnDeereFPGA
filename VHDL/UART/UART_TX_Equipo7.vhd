@@ -7,8 +7,8 @@ ENTITY UART_TX_Equipo7 IS
 	PORT
 		(
 			clk, reset, s_tick, tx_start		:		IN		STD_LOGIC;
-			d_in										:		IN		STD_LOGIC_VECTOR(7 DOWNTO 0);
-			tx, tx_done_tick						:		OUT	STD_LOGIC
+			d_in					:		IN		STD_LOGIC_VECTOR(7 DOWNTO 0);
+			tx, tx_done_tick			:		OUT		STD_LOGIC
 			
 		);
 
@@ -25,7 +25,7 @@ BEGIN
 	PROCESS(clk, reset)
 	
 		TYPE UART_statetype IS (UART_IDLE, UART_START, UART_DATA, UART_STOP);
-		VARIABLE UART_state	: 		UART_statetype;
+		VARIABLE UART_state		: 		UART_statetype;
 		
 		VARIABLE counter		:		UNSIGNED(2 DOWNTO 0);	
 		
