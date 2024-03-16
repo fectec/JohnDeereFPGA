@@ -132,6 +132,11 @@ BEGIN
 					tx <= '1';
 					tx_done_tick <= '0';
 					
+				WHEN OTHERS =>
+					
+					tx <= '1';
+					tx_done_tick <= '0';
+					
 			END CASE;
 			
 		END IF;
