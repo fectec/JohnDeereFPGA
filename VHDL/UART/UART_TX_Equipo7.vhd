@@ -3,12 +3,18 @@ USE 		ieee.std_logic_1164.ALL;
 USE	 	ieee.numeric_std.ALL;
 
 ENTITY UART_TX_Equipo7 IS
+	
+	GENERIC
+		(
+			DATA_WIDTH								:		INTEGER	:=	8;
+			COUNTER_WIDTH							:		INTEGER	:= 3	-- log 2 (8) = 3
+		);
 
 	PORT
 		(
 			clk, reset, s_tick, tx_start		:		IN		STD_LOGIC;
-			d_in					:		IN		STD_LOGIC_VECTOR(7 DOWNTO 0);
-			tx, tx_done_tick			:		OUT		STD_LOGIC
+			d_in										:		IN		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
+			tx, tx_done_tick						:		OUT	STD_LOGIC
 			
 		);
 
@@ -25,9 +31,9 @@ BEGIN
 	PROCESS(clk, reset)
 	
 		TYPE UART_statetype IS (UART_IDLE, UART_START, UART_DATA, UART_STOP);
-		VARIABLE UART_state		: 		UART_statetype;
+		VARIABLE UART_state	: 		UART_statetype;
 		
-		VARIABLE counter		:		UNSIGNED(2 DOWNTO 0);	
+		VARIABLE counter		:		UNSIGNED(COUNTER_WIDTH - 1 DOWNTO 0);	
 		
 	BEGIN
 	
@@ -71,13 +77,13 @@ BEGIN
 						
 							UART_STATE := UART_DATA;
 							
-						ELSIF (s_tick = '1' AND counter /= 7) THEN
+						ELSIF (s_tick = '1' AND counter /= DATA_WIDTH - 1) THEN
 							
 							UART_STATE := UART_DATA;
 							counter := counter + 1;
-							d_in_tmp <= '0' & d_in_tmp(7 DOWNTO 1);
+							d_in_tmp <= '0' & d_in_tmp(DATA_WIDTH - 1 DOWNTO 1);
 							
-						ELSIF (s_tick = '1' AND NOT(counter /= 7)) THEN
+						ELSIF (s_tick = '1' AND NOT(counter /= DATA_WIDTH - 1)) THEN
 						
 							UART_STATE := UART_STOP;
 						
@@ -132,4 +138,4 @@ BEGIN
 		
 	END PROCESS;
 	
-END Behavioral;	
+END Behavioral;
