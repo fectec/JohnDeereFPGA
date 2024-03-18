@@ -1,20 +1,20 @@
 LIBRARY	ieee;
-USE 		ieee.std_logic_1164.ALL;
-USE	 	ieee.numeric_std.ALL;
+USE 	ieee.std_logic_1164.ALL;
+USE	ieee.numeric_std.ALL;
 
 ENTITY UART_TX_Equipo7 IS
 	
 	GENERIC
 		(
-			DATA_WIDTH								:		INTEGER	:=	8;
-			COUNTER_WIDTH							:		INTEGER	:= 3	-- log 2 (8) = 3.
+			DATA_WIDTH				:		INTEGER	:=	8;
+			COUNTER_WIDTH				:		INTEGER	:= 	3	-- log 2 (8) = 3.
 		);
 
 	PORT
 		(
 			clk, reset, s_tick, tx_start		:		IN		STD_LOGIC;
-			d_in										:		IN		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
-			tx, tx_done_tick						:		OUT	STD_LOGIC
+			d_in					:		IN		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
+			tx, tx_done_tick			:		OUT		STD_LOGIC
 		);
 
 END UART_TX_Equipo7;
@@ -30,7 +30,7 @@ BEGIN
 		TYPE UART_statetype IS (UART_IDLE, UART_START, UART_DATA, UART_STOP);
 		VARIABLE UART_state		: 		UART_statetype	:= UART_IDLE;
 
-		VARIABLE counter			:		INTEGER			:= 0;
+		VARIABLE counter		:		INTEGER		:= 0;
 		
 	BEGIN
 	
