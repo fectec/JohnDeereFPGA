@@ -1,12 +1,12 @@
 LIBRARY	ieee;
-USE 		ieee.std_logic_1164.ALL;
-USE	 	ieee.numeric_std.ALL;
+USE 	ieee.std_logic_1164.ALL;
+USE	ieee.numeric_std.ALL;
 
 ENTITY	UART_TX_Interface 	IS
 	
 	GENERIC
 		(
-			DATA_WIDTH			:		INTEGER	:=	8
+			DATA_WIDTH		:		INTEGER	:=	8
 		);
 		
 	PORT
@@ -41,7 +41,7 @@ ARCHITECTURE Behavioral OF	UART_TX_Interface	IS
 		GENERIC
 			(
 				DATA_WIDTH			:		INTEGER	:=	8;
-				COUNTER_WIDTH			:		INTEGER	:= 3	-- log 2 (8) = 3
+				COUNTER_WIDTH			:		INTEGER	:= 3	
 			);
 
 		PORT
@@ -67,7 +67,7 @@ BEGIN
 						tick => baudrate_gen_tick
 					);
 					
-	UT		:		UART_TX_Equipo7
+	UT	:		UART_TX_Equipo7
 	
 					PORT MAP
 					(

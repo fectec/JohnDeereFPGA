@@ -7,7 +7,7 @@ ENTITY UART_TX_Equipo7 IS
 	GENERIC
 		(
 			DATA_WIDTH								:		INTEGER	:=	8;
-			COUNTER_WIDTH							:		INTEGER	:= 3	-- log 2 (8) = 3
+			COUNTER_WIDTH							:		INTEGER	:= 3	-- log 2 (8) = 3.
 		);
 
 	PORT
@@ -15,36 +15,66 @@ ENTITY UART_TX_Equipo7 IS
 			clk, reset, s_tick, tx_start		:		IN		STD_LOGIC;
 			d_in										:		IN		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
 			tx, tx_done_tick						:		OUT	STD_LOGIC
-			
 		);
 
 END UART_TX_Equipo7;
-
+	
 ARCHITECTURE Behavioral OF UART_TX_Equipo7 IS
 
-	SIGNAL	d_in_tmp			:		STD_LOGIC_VECTOR(7 DOWNTO 0);
-		
-BEGIN
+	SIGNAL d_in_tmp				:		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0)	:=	(OTHERS => '0');
 	
-	d_in_tmp <= d_in;
+BEGIN
 
 	PROCESS(clk, reset)
 	
 		TYPE UART_statetype IS (UART_IDLE, UART_START, UART_DATA, UART_STOP);
-		VARIABLE UART_state	: 		UART_statetype;
-		
-		VARIABLE counter		:		UNSIGNED(COUNTER_WIDTH - 1 DOWNTO 0);	
+		VARIABLE UART_state		: 		UART_statetype	:= UART_IDLE;
+
+		VARIABLE counter			:		INTEGER			:= 0;
 		
 	BEGIN
 	
 		IF (RISING_EDGE(clk)) THEN
-		
+
 			IF(reset = '1') THEN
 			
 				UART_state := UART_IDLE;
 			
 			ELSE
 			
+				CASE UART_STATE IS
+				
+					WHEN UART_IDLE =>
+						
+						tx <= '1';
+						tx_done_tick <= '0';
+						counter := 0;		
+						d_in_tmp <= d_in;
+						
+					WHEN UART_START =>
+					
+						tx <= '0';
+						tx_done_tick <= '0';
+						
+					WHEN UART_DATA =>
+						
+						tx <= d_in_tmp(0);
+						tx_done_tick <= '0';
+											
+					WHEN UART_STOP =>
+					
+						tx <= '1';
+						tx_done_tick <= '1';
+						
+					WHEN OTHERS =>
+						
+						tx <= '1';
+						tx_done_tick <= '0';
+						counter := 0;
+						d_in_tmp <= d_in;
+						
+				END CASE;
+				
 				CASE UART_state IS
 				
 					WHEN UART_IDLE =>
@@ -77,16 +107,16 @@ BEGIN
 						
 							UART_STATE := UART_DATA;
 							
-						ELSIF (s_tick = '1' AND counter /= DATA_WIDTH - 1) THEN
+						ELSIF (s_tick = '1' AND counter < DATA_WIDTH - 1) THEN
 							
 							UART_STATE := UART_DATA;
 							counter := counter + 1;
 							d_in_tmp <= '0' & d_in_tmp(DATA_WIDTH - 1 DOWNTO 1);
-							
-						ELSIF (s_tick = '1' AND NOT(counter /= DATA_WIDTH - 1)) THEN
+						
+						ELSIF (s_tick = '1' AND counter = DATA_WIDTH - 1) THEN
 						
 							UART_STATE := UART_STOP;
-						
+							
 						END IF;
 						
 					WHEN UART_STOP =>
@@ -98,7 +128,6 @@ BEGIN
 						ELSIF (s_tick = '1') THEN
 						
 							UART_STATE := UART_IDLE;
-							tx_done_tick <= '1';
 							
 						END IF;
 					
@@ -109,35 +138,6 @@ BEGIN
 				END CASE;
 						
 			END IF;
-			
-			CASE UART_STATE IS
-			
-				WHEN UART_IDLE =>
-					
-					tx <= '1';
-					tx_done_tick <= '0';
-					
-				WHEN UART_START =>
-				
-					tx <= '0';
-					tx_done_tick <= '0';
-					
-				WHEN UART_DATA =>
-					
-					tx <= d_in(0);
-					tx_done_tick <= '0';
-					
-				WHEN UART_STOP =>
-				
-					tx <= '1';
-					tx_done_tick <= '0';
-					
-				WHEN OTHERS =>
-					
-					tx <= '1';
-					tx_done_tick <= '0';
-					
-			END CASE;
 			
 		END IF;
 		
