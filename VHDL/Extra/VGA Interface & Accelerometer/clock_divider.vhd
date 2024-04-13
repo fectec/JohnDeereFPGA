@@ -6,15 +6,15 @@ ENTITY clock_divider IS
 
 	GENERIC (
 	
-		CLOCK_FREQUENCY	:	POSITIVE	:= 50000000;
+		CLOCK_FREQUENCY		:	POSITIVE	:= 50000000;
 		FRAMES_PER_SECOND	:	POSITIVE	:=	60
 		
 	);
 
    PORT (
 	
-		clk, rst		:	IN  STD_LOGIC;
-      clk_out		: 	OUT STD_LOGIC 
+		clk, rst	:	IN  STD_LOGIC;
+      		clk_out		: 	OUT STD_LOGIC 
 		
 	);
 	
