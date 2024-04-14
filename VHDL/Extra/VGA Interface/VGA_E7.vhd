@@ -6,14 +6,14 @@ ENTITY VGA_E7 IS
 
 	GENERIC (
 	
-		Ha			: 		POSITIVE 	:= 96;		--Hpulse
-		Hb			: 		POSITIVE 	:= 144; 	--Hpulse+HBP
-		Hc			: 		POSITIVE 	:= 784; 	--Hpulse+HBP+Hactive
-		Hd			: 		POSITIVE 	:= 800; 	--Hpulse+HBP+Hactive+HFP
-		Va			: 		POSITIVE 	:= 2; 		--Vpulse
-		Vb			: 		POSITIVE 	:= 35; 		--Vpulse+VBP
-		Vc			: 		POSITIVE 	:= 515; 	--Vpulse+VBP+Vactive
-		Vd			: 		POSITIVE	:= 525;		--Vpulse+VBP+Vactive+VFP
+		Ha			: 	POSITIVE 	:= 96;		-- Hpulse
+		Hb			: 	POSITIVE 	:= 144; 	-- Hpulse+HBP
+		Hc			: 	POSITIVE 	:= 784; 	-- Hpulse+HBP+Hactive
+		Hd			: 	POSITIVE 	:= 800; 	-- Hpulse+HBP+Hactive+HFP
+		Va			: 	POSITIVE 	:= 2; 		-- Vpulse
+		Vb			: 	POSITIVE 	:= 35; 		-- Vpulse+VBP
+		Vc			: 	POSITIVE 	:= 515; 	-- Vpulse+VBP+Vactive
+		Vd			: 	POSITIVE	:= 525;		-- Vpulse+VBP+Vactive+VFP
 		
 		FRAMES_PER_SECOND	:	POSITIVE	:= 60;
 		
@@ -30,12 +30,12 @@ ENTITY VGA_E7 IS
 	
 	PORT (
 	
-		clk							: 	IN	STD_LOGIC;	-- 50MHz
-		Hsync, Vsync						: 	BUFFER STD_LOGIC;
-		R, G, B							: 	OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+		clk					: 	IN	STD_LOGIC;	-- 50MHz
+		Hsync, Vsync				: 	BUFFER	STD_LOGIC;
+		R, G, B					: 	OUT 	STD_LOGIC_VECTOR(3 DOWNTO 0);
 		
-		up_s, down_s, right_s, left_s				:	STD_LOGIC;
-		restart							: 	STD_LOGIC
+		up_s, down_s, right_s, left_s		:	IN	STD_LOGIC;
+		restart					: 	IN	STD_LOGIC
 		
 	);
 	
@@ -48,7 +48,7 @@ ARCHITECTURE VGA_E7 OF VGA_E7 IS
 		GENERIC (
 	
 			CLOCK_FREQUENCY		:	POSITIVE	:= 50000000;
-			FRAMES_PER_SECOND	:	POSITIVE	:=	60
+			FRAMES_PER_SECOND	:	POSITIVE	:= 60
 		
 		);
 
