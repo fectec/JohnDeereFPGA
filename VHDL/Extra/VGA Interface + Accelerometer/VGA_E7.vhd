@@ -6,47 +6,47 @@ ENTITY VGA_E7 IS
 
 	GENERIC (
 	
-				Ha			: 		POSITIVE 	:= 96;		--Hpulse
-				Hb			: 		POSITIVE 	:= 144; 		--Hpulse+HBP
-				Hc			: 		POSITIVE 	:= 784; 		--Hpulse+HBP+Hactive
-				Hd			: 		POSITIVE 	:= 800; 		--Hpulse+HBP+Hactive+HFP
-				Va			: 		POSITIVE 	:= 2; 		--Vpulse
-				Vb			: 		POSITIVE 	:= 35; 		--Vpulse+VBP
-				Vc			: 		POSITIVE 	:= 515; 		--Vpulse+VBP+Vactive
-				Vd			: 		POSITIVE		:= 525; 		--Vpulse+VBP+Vactive+VFP
+				Ha			: 	POSITIVE 	:= 96;		--Hpulse
+				Hb			: 	POSITIVE 	:= 144; 	--Hpulse+HBP
+				Hc			: 	POSITIVE 	:= 784; 	--Hpulse+HBP+Hactive
+				Hd			: 	POSITIVE 	:= 800; 	--Hpulse+HBP+Hactive+HFP
+				Va			: 	POSITIVE 	:= 2; 		--Vpulse
+				Vb			: 	POSITIVE 	:= 35; 		--Vpulse+VBP
+				Vc			: 	POSITIVE 	:= 515; 	--Vpulse+VBP+Vactive
+				Vd			: 	POSITIVE	:= 525;		--Vpulse+VBP+Vactive+VFP
 				
-				FRAMES_PER_SECOND	:	POSITIVE	:= 60;
+				FRAMES_PER_SECOND	:	POSITIVE := 60;
 				
-				SCREEN_WIDTH		:	POSITIVE	:= 640;
-				SCREEN_HEIGHT		:	POSITIVE	:= 480;
+				SCREEN_WIDTH		:	POSITIVE := 640;
+				SCREEN_HEIGHT		:	POSITIVE := 480;
 				
-				SPRITE_SIZE			:	POSITIVE := 75;
-				COLOR_LAYERS		:	POSITIVE	:=	5;
+				SPRITE_SIZE		:	POSITIVE := 75;
+				COLOR_LAYERS		:	POSITIVE := 5;
 			
-				SPRITES				:	POSITIVE	:=	3;
-				DISPLACEMENT		:	POSITIVE	:= 8
+				SPRITES			:	POSITIVE := 3;
+				DISPLACEMENT		:	POSITIVE := 8
 	
 	);
 	
 	PORT (
 	
-			clk									: 	IN	STD_LOGIC;	-- 50MHz
-			Hsync, Vsync						: 	BUFFER STD_LOGIC;
-			R, G, B								: 	OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+			clk				: 	IN	STD_LOGIC;	-- 50MHz
+			Hsync, Vsync			: 	BUFFER STD_LOGIC;
+			R, G, B				: 	OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 			
-			up_s, down_s						:	STD_LOGIC;
-			restart								: 	STD_LOGIC;
+			up_s, down_s			:	STD_LOGIC;
+			restart				: 	STD_LOGIC;
 			
 			-- Accelerometer
 						
-			KEY									: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-			GSENSOR_INT							: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-			GSENSOR_SDI							: INOUT	STD_LOGIC;
-			GSENSOR_SDO							: INOUT	STD_LOGIC;
-			GSENSOR_CS_N						: OUT		STD_LOGIC;
-			GSENSOR_SCLK						: OUT		STD_LOGIC;
+			KEY				: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+			GSENSOR_INT			: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+			GSENSOR_SDI			: INOUT	STD_LOGIC;
+			GSENSOR_SDO			: INOUT	STD_LOGIC;
+			GSENSOR_CS_N			: OUT	STD_LOGIC;
+			GSENSOR_SCLK			: OUT	STD_LOGIC;
 						
-			accelerometer_x_value			: BUFFER	STD_LOGIC_VECTOR(9 DOWNTO 0)
+			accelerometer_x_value		: BUFFER	STD_LOGIC_VECTOR(9 DOWNTO 0)
 	);
 	
 END VGA_E7;
@@ -57,14 +57,14 @@ ARCHITECTURE VGA_E7 OF VGA_E7 IS
 	
 		GENERIC (
 	
-				CLOCK_FREQUENCY	:	POSITIVE	:= 50000000;
+				CLOCK_FREQUENCY		:	POSITIVE	:= 50000000;
 				FRAMES_PER_SECOND	:	POSITIVE	:=	60
 		
 		);
 
 		PORT ( 
 		
-				clk, rst		:	IN  STD_LOGIC;
+				clk, rst	:	IN  STD_LOGIC;
 				clk_out		: 	OUT STD_LOGIC 
 			
 		);
@@ -75,16 +75,16 @@ ARCHITECTURE VGA_E7 OF VGA_E7 IS
 		
 		PORT (	
 		
-				CLOCK_50			: IN		STD_LOGIC;
+				CLOCK_50			: IN	STD_LOGIC;
 				
-				KEY				: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_INT		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI		: INOUT	STD_LOGIC;
-				GSENSOR_SDO		: INOUT	STD_LOGIC;
-				GSENSOR_CS_N	: OUT		STD_LOGIC;
-				GSENSOR_SCLK	: OUT		STD_LOGIC;
+				KEY				: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_INT			: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI			: INOUT	STD_LOGIC;
+				GSENSOR_SDO			: INOUT	STD_LOGIC;
+				GSENSOR_CS_N			: OUT	STD_LOGIC;
+				GSENSOR_SCLK			: OUT	STD_LOGIC;
 				
-				LEDR				: OUT		STD_LOGIC_VECTOR(9 DOWNTO 0)
+				LEDR				: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
 			
 		);
 			
@@ -97,17 +97,17 @@ ARCHITECTURE VGA_E7 OF VGA_E7 IS
 	
 	SIGNAL FPS_PER_SPRITE			:	POSITIVE;
 		
-	SIGNAL x_offset					:	INTEGER;
-	SIGNAL y_offset					:	INTEGER;
+	SIGNAL x_offset				:	INTEGER;
+	SIGNAL y_offset				:	INTEGER;
 	
-	SIGNAL actual_sprite	:	INTEGER	RANGE 0 TO SPRITES - 1	:= 0;
+	SIGNAL actual_sprite			:	INTEGER	RANGE 0 TO SPRITES - 1	:= 0;
 	
 	SIGNAL touching_x_corner		:	STD_LOGIC;
 	SIGNAL touching_y_corner		:	STD_LOGIC;
 	SIGNAL touching_corner			:	STD_LOGIC;
 	
 	SIGNAL right_s, left_s			: 	STD_LOGIC;
-	SIGNAL accelerometer_x_offset	:	INTEGER RANGE -DISPLACEMENT TO DISPLACEMENT;
+	SIGNAL accelerometer_x_offset		:	INTEGER RANGE -DISPLACEMENT TO DISPLACEMENT;
 	
 BEGIN
 	
