@@ -26,10 +26,10 @@ Still under work.
 
 ### Unity & FPGA Control
 
-![Game Control Demo](https://github.com/fectec/JohnDeereFPGA/assets/127822858/9b6ddda6-4450-4c8e-9779-ef3de581840a)
+![Game Control Demo](https://github.com/fectec/JohnDeereFPGA/assets/127822858/c69c45e2-34c7-402d-be11-884ea54dc92b)
 
 ## Bonus - VGA Interface
 
 As a part of the coursework, board's *VGA* interface was used to display and move an object. Since it was a fun activity and a first approach to the accelerometer, it was decided to push this code too. The sprites for the character were generated using a *Python* script which scales and transforms images into a matrix of values, each one representing a coded *R, G, B* representation of the pixel.
 
-<img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/a2bd6ac9-bb7d-48b2-89cb-583ef9889255" width="518" height="291"/>
+<img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/a2bd6ac9-bb7d-48b2-89cb-583ef9889255" alt = "VGA Among Us" width="518" height="291"/>
