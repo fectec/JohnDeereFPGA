@@ -6,7 +6,7 @@ ENTITY Decoder_BCDTo7Seg IS
 	PORT	(	
 				BCD				:		IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
 				Segments			:		OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
-			);
+		);
 			
 END ENTITY Decoder_BCDTo7Seg;
 
