@@ -26,7 +26,7 @@ Still under work.
 
 ### Unity & FPGA Control
 
-<img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/6a690e65-00ae-4835-879f-19182e60e8d9" alt = "Game Control Demo" width="518" height="291"/>
+<img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/1e5654e8-f931-47ec-b7e0-9fd6c74e4f33" alt = "Game Control Demo" width="518" height="291"/>
 
 ## Bonus - VGA Interface
 
