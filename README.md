@@ -30,6 +30,6 @@ Still under work.
 
 ## Bonus - VGA Interface
 
-As a part of the coursework, board's VGA interface was used to display and move an object. Since it was a fun activity, it was decided to push this code too. The sprites for the character were generated using a Python script which scales and transforms images into a matrix of values, each one representing a coded R, G, B representation of the pixel.
+As a part of the coursework, board's VGA interface was used to display and move an object. Since it was a fun activity and a first approach to the accelerometer, it was decided to push this code too. The sprites for the character were generated using a Python script which scales and transforms images into a matrix of values, each one representing a coded R, G, B representation of the pixel.
 
 ![VGA Among Us](https://github.com/fectec/JohnDeereFPGA/assets/127822858/a2bd6ac9-bb7d-48b2-89cb-583ef9889255)
