@@ -2,9 +2,9 @@
 
 Main project for undergrad course “**Design with Programmable Logic**”, which delves into programmable logic devices, being an FPGA the main tool in which digital designs are developed and tested.
 
-It consists of a **John Deere tractor driving simulator via Unity game engine**. The vehicle is controlled through the **DE10-Lite FPGA board programmed in VHDL**. The *accelerometer* represents the steering, the *switches* the Gear Selection and the *buttons* the Throttle and Brake. This information is sent via TTL/USB to the simulation running on a desktop or personal computer, which displays the corresponding tractor behavior on the monitor. Likewise, if an object is picked up in the video game, this data is sent via the above-mentioned channel to the board, which then shows the number of items picked up so far on a *7-segment display*.
-
 ![132318264_TerasicTechnologies_DE10-LiteBoard-TerasicTechnologies](https://github.com/fectec/JohnDeereFPGA/assets/127822858/c16ad87a-b44f-4f33-8b6f-cad34f7cb0b8)
+
+It consists of a **John Deere tractor driving simulator via Unity game engine**. The vehicle is controlled through the **DE10-Lite FPGA board programmed in VHDL**. The *accelerometer* represents the steering, the *switches* the Gear Selection and the *buttons* the Throttle and Brake. This information is sent via TTL/USB to the simulation running on a desktop or personal computer, which displays the corresponding tractor behavior on the monitor. Likewise, if an object is picked up in the video game, this data is sent via the above-mentioned channel to the board, which then shows the number of items picked up so far on a *7-segment display*.
 
 First implementation was done using *UART*, *debounce*, *BCD to 7 segments decoder* and *accelerometer* entities instantiated as components inside a board interface top-entity. Then, *Gumnut* soft core microprocessor was added so it would be possible to interact with all interfaces (accelerometer, switches, buttons, displays, serial port) via *Assembly*.
 
@@ -26,7 +26,7 @@ Still under work.
 
 ### Unity & FPGA Control
 
-![Game Control Demo](https://github.com/fectec/JohnDeereFPGA/assets/127822858/c69c45e2-34c7-402d-be11-884ea54dc92b)
+![a](https://github.com/fectec/JohnDeereFPGA/assets/127822858/6a690e65-00ae-4835-879f-19182e60e8d9)
 
 ## Bonus - VGA Interface
 
