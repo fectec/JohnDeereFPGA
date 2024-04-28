@@ -32,4 +32,4 @@ Still under work.
 
 As a part of the coursework, board's VGA interface was used to display and move an object. Since it was a fun activity, it was decided to push this code too. The sprites for the character were generated using a Python script which scales and transforms images into a matrix of values, each one representing a coded R, G, B representation of the pixel.
 
-![VGA Among Us](https://ibb.co/yXsw8Z0)
+<a href="https://ibb.co/yXsw8Z0"><img src="https://i.ibb.co/0cJgf6q/AMOGUS.gif" alt="VGA Among Us" border="0"></a>
