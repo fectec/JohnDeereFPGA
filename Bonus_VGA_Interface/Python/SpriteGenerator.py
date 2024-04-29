@@ -1,10 +1,10 @@
-# Load the image you want to convert to a VHDL R, G & B matrix representation, 
+# Load the image you want to convert to a VHDL R, G & B matrix representation,
 # this Python script will provide you the .txt file with the code you can paste
 # into the VGA drawing entity.
 
-# For instance, if you run it without modification, you'll get a file 
+# For instance, if you run it without modification, you'll get a file
 # with a structure like this one:
-# constant FRAME_N_DATA  std_int_matrix = (
+# constant FRAME_N_DATA : std_int_matrix := (
 #   (4,  3,  3,  3,  3),
 #	  (4,  3,  2,  3,  3),
 #	  (4,  4,  2,  3,  3),
@@ -21,12 +21,12 @@ WIDTH = 5
 HEIGHT = 5
 IMAGE_PATH = 'image.png'
 MATRIX_FILE_PATH = 'matrix.txt'
-VHDL_FILE_PATH = vhdl.txt
+VHDL_FILE_PATH = "vhdl.txt"
 
-def rescale_image(image, width = WIDTH, height = HEIGHT)
+def rescale_image(image, width = WIDTH, height = HEIGHT):
     return cv2.resize(image, (width, height))
 
-def assign_color_value(pixel)
+def assign_color_value(pixel):
 
     # Define color values
 
@@ -48,18 +48,18 @@ def assign_color_value(pixel)
 
     min_dist = min(dist_to_blue, dist_to_green, dist_to_red, dist_to_white, dist_to_black)
 
-    if min_dist == dist_to_blue
+    if min_dist == dist_to_blue:
         return 0  # Blue
-    elif min_dist == dist_to_green
+    elif min_dist == dist_to_green:
         return 1  # Green
-    elif min_dist == dist_to_red
+    elif min_dist == dist_to_red:
         return 2  # Red
-    elif min_dist == dist_to_black
+    elif min_dist == dist_to_black:
         return 4  # Black
-    else
+    else:
         return 3  # White
 
-def convert_to_rgb_values(image)
+def convert_to_rgb_values(image):
 
     # Create RGB values image
 
@@ -67,8 +67,8 @@ def convert_to_rgb_values(image)
 
     # Iterate through each pixel
 
-    for i in range(image.shape[0])
-        for j in range(image.shape[1])
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
 
             pixel = image[i, j]
 
@@ -78,37 +78,37 @@ def convert_to_rgb_values(image)
 
     return rgb_values_image
 
-def parse_matrix_txt_to_vhdl(matrix_file_path, vhdl_output_file)
+def parse_matrix_txt_to_vhdl(matrix_file_path, vhdl_output_file):
 
-    with open(matrix_file_path, r) as file
+    with open(matrix_file_path, "r") as file:
 
         matrix_lines = file.readlines()
 
-    vhdl_code = constant FRAME_N_DATA  std_int_matrix = (n
+    vhdl_code = "constant FRAME_N_DATA : std_int_matrix := (\n"
 
-    for line in matrix_lines
+    for line in matrix_lines:
 
         # Remove square brackets and split values
 
-        values = line.strip()[1-1].split(,)
-        vhdl_code += t( + , .join(values) + ),n
-    
-    vhdl_code = vhdl_code.rstrip(,n) + n);
+        values = line.strip()[1:-1].split(",")
+        vhdl_code += "\t(" + ", ".join(values) + "),\n"
+
+    vhdl_code = vhdl_code.rstrip(",\n") + "\n);"
 
     # Save VHDL code to output file
 
-    with open(vhdl_output_file, w) as output_file
+    with open(vhdl_output_file, "w") as output_file:
         output_file.write(vhdl_code)
 
 # Load the image
 
 image = cv2.imread(IMAGE_PATH)
 
-if image is None
+if image is None:
 
-    print(Error Unable to load image.)
+    print("Error: Unable to load image.")
 
-else
+else:
 
     # Rescale the image
 
@@ -120,11 +120,11 @@ else
 
     # Save the matrix representation to a file
 
-    with open(MATRIX_FILE_PATH, w) as f
+    with open(MATRIX_FILE_PATH, "w") as f:
 
-        for row in rgb_values_image.tolist()
+        for row in rgb_values_image.tolist():
 
-            f.write([ + , .join(map(str, row)) + ]n)
+            f.write("[" + ", ".join(map(str, row)) + "]\n")
 
 parse_matrix_txt_to_vhdl(MATRIX_FILE_PATH, VHDL_FILE_PATH)
-print(VHDL code saved to, VHDL_FILE_PATH)
+print("VHDL code saved to", VHDL_FILE_PATH)
