@@ -2,7 +2,7 @@ LIBRARY	ieee;
 USE 	ieee.std_logic_1164.ALL;
 USE	ieee.numeric_std.ALL;
 
-ENTITY UART_TX_ IS
+ENTITY UART_TX IS
 	
 	GENERIC
 		(
@@ -17,9 +17,9 @@ ENTITY UART_TX_ IS
 			tx, tx_done_tick			:		OUT		STD_LOGIC
 		);
 
-END UART_TX_;
+END UART_TX;
 	
-ARCHITECTURE Behavioral OF UART_TX_ IS
+ARCHITECTURE Behavioral OF UART_TX IS
 
 	SIGNAL d_in_tmp				:		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0)	:=	(OTHERS => '0');
 	

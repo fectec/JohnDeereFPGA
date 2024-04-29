@@ -11,9 +11,9 @@ ENTITY	UART_TX_Interface 	IS
 		
 	PORT
 		(
-			clk, tx_start, reset_baudrate_gen, reset_UART_TX_Equipo7		:		IN		STD_LOGIC;
-			d_in									:		IN		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
-			tx, tx_done_tick							: 		OUT		STD_LOGIC
+			clk, tx_start, reset_baudrate_gen, reset_UART_TX		:		IN		STD_LOGIC;
+			d_in								:		IN		STD_LOGIC_VECTOR(DATA_WIDTH - 1 DOWNTO 0);
+			tx, tx_done_tick						: 		OUT		STD_LOGIC
 		);
 		
 END	UART_TX_Interface;
@@ -36,7 +36,7 @@ ARCHITECTURE Behavioral OF	UART_TX_Interface	IS
 			
 	END COMPONENT;
 
-	COMPONENT UART_TX_Equipo7 IS
+	COMPONENT UART_TX IS
 		
 		GENERIC
 			(
@@ -67,12 +67,12 @@ BEGIN
 						tick => baudrate_gen_tick
 					);
 					
-	UT	:		UART_TX_Equipo7
+	UT	:		UART_TX
 	
 					PORT MAP
 					(
 						clk => clk,
-						reset => reset_UART_TX_Equipo7,
+						reset => reset_UART_TX,
 						s_tick => baudrate_gen_tick,
 						tx_start => tx_start,
 						d_in => d_in,
