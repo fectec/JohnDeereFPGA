@@ -3,7 +3,7 @@
 # into the VGA drawing entity.
 
 # For instance, if you run it without modification, you'll get a file 
-# with a structure like this one
+# with a structure like this one:
 # constant FRAME_N_DATA  std_int_matrix = (
 #   (4,  3,  3,  3,  3),
 #	  (4,  3,  2,  3,  3),
