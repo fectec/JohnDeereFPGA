@@ -189,7 +189,7 @@ BEGIN
 	
 	-- Gumnut & interfaces interaction
 	
-	-- Output => TX Data -> Data memory address : 
+	-- Output => TX Data -> Data memory address	:	0x000
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -211,7 +211,7 @@ BEGIN
 			END IF;
 	END PROCESS;
 	
-	-- Output => TX Start -> Data memory address :
+	-- Output => TX Start -> Data memory address	:	0x001
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -233,7 +233,7 @@ BEGIN
 			END IF;
 	END PROCESS;	
 	
-	-- Output => Displays -> Data memory address :			
+	-- Output => Displays -> Data memory address	:	0x010		
 			
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -270,23 +270,23 @@ BEGIN
 				AND	port_we_o  = '0'	-- Read
 				THEN
 				
-					IF	port_adr_o = "00000011"	THEN	-- Input => RX Data -> Data memory address :	
+					IF	port_adr_o = "00000011"	THEN	-- Input => RX Data -> Data memory address 		:	0x011
 						
 						port_dat_i <= "0000000" & rx_data_de10(0);
 				
-					ELSIF	port_adr_o = "00000100"	THEN	-- Input => KEY 0 -> Data memory address :	
+					ELSIF	port_adr_o = "00000100"	THEN	-- Input => KEY 0 -> Data memory address		:	0x100	
 						
 						port_dat_i <= "0000000" & key0_db;
 						
-					ELSIF	port_adr_o = "00000101"	THEN	-- Input => KEY 1 -> Data memory address :
+					ELSIF	port_adr_o = "00000101"	THEN	-- Input => KEY 1 -> Data memory address		:	0x101
 					
 						port_dat_i <= "0000000" & key1_db;
 						
-					ELSIF	port_adr_o = "00000110"	THEN	-- Input => SWITCHES -> Data memory address :	
+					ELSIF	port_adr_o = "00000110"	THEN	-- Input => SWITCHES -> Data memory address		:	0x110
 						
 						port_dat_i <= "00" & SW(5 DOWNTO 0);
 						
-					ELSIF	port_adr_o = "00000111"	THEN	-- Input => Accelerometer -> Data memory address :		
+					ELSIF	port_adr_o = "00000111"	THEN	-- Input => Accelerometer -> Data memory address	:	0x111		
 						
 						port_dat_i <= LEDR(8 DOWNTO 1);
 					
