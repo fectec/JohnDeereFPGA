@@ -253,7 +253,7 @@ BEGIN
 					
 				END IF;
 			END IF;
-	END PROCESS;		ww	
+	END PROCESS;			
 	
 	-- Inputs
 	
@@ -274,13 +274,13 @@ BEGIN
 						
 						port_dat_i <= "0000000" & rx_data_de10(0);
 				
-					IF	port_adr_o = "00000100"	THEN	-- Input => KEY 0 -> Data memory address :	
+					ELSIF	port_adr_o = "00000100"	THEN	-- Input => KEY 0 -> Data memory address :	
 						
 						port_dat_i <= "0000000" & key0_db;
 						
 					ELSIF	port_adr_o = "00000101"	THEN	-- Input => KEY 1 -> Data memory address :
 					
-						port_dat_i <= "0000000" & key1_db;w
+						port_dat_i <= "0000000" & key1_db;
 						
 					ELSIF	port_adr_o = "00000110"	THEN	-- Input => SWITCHES -> Data memory address :	
 						
