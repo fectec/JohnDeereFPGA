@@ -1,0 +1,21 @@
+	text
+	org 0x000	; Start here on reset
+	jmp start
+	
+; Data memory layout
+
+	data
+	
+	TX_Data_o	:	bss 1	; Data memory address : 0x000
+	TX_Start_o	:	bss 1	; Data memory address : 0x001
+	BCD_o		:	bss 1	; Data memory address : 0x010
+	
+	RX_Data_i	:	bss 1	; Data memory address : 0x011
+	KEY_0_i		:	bss 1	; Data memory address : 0x100
+	KEY_1_i		:	bss 1	; Data memory address : 0x101
+	SWITCHES_i	:	bss 1	; Data memory address : 0x110
+	ACC_i		:	bss 1	; Data memory address : 0x111
+	
+; Main program
+	
+	start
