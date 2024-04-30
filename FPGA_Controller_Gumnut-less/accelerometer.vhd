@@ -1,5 +1,5 @@
-LIBRARY 	ieee;
-USE		ieee.STD_LOGIC_1164.all;
+LIBRARY ieee;
+USE	ieee.STD_LOGIC_1164.all;
 
 ENTITY accelerometer IS
 	

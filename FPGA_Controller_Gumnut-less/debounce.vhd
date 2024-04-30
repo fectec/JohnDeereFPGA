@@ -1,6 +1,6 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.all;
-USE ieee.std_logic_unsigned.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 -- This module can be used to debounce a KEY on the DE10-Lite board
 
@@ -22,7 +22,7 @@ ARCHITECTURE Behavior OF debounce IS
 BEGIN	
 	PROCESS
 	BEGIN
-		WAIT UNTIL Clock'EVENT AND Clock = '1';
+		WAIT UNTIL RISING_EDGE(Clock);
 		
 		IF (done = '1' AND button = '1') THEN	-- When counter expires and button is no longer 
 				  debounced <= '0';	-- pressed, then set the debounced output to 0
@@ -34,7 +34,7 @@ BEGIN
 
 	PROCESS
 	BEGIN
-		WAIT UNTIL Clock'EVENT AND Clock = '1';
+		WAIT UNTIL RISING_EDGE(Clock);
 		
 		IF (done = '1') THEN
 			Count <= "000";

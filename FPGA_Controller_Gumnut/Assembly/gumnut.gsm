@@ -1,0 +1,23 @@
+	text
+	org 0x000	; Start here on reset
+	jmp start
+	
+; Data memory layout
+
+	data
+
+	TX_Data		: bss 1		; Data memory address : 0x000
+	TX_Start	: bss 1		; Data memory address : 0x001
+	BCD		: bss 1		; Data memory address : 0x010
+	RX_Data		: bss 1		; Data memory address : 0x011
+	KEY_0		: bss 1		; Data memory address : 0x100
+	KEY_1		: bss 1		; Data memory address : 0x101
+	SWITCHES	: bss 1		; Data memory address : 0x110
+	ACCELEROMETER	: bss 1		; Data memory address : 0x111
+	
+; Main program
+
+	text
+	org 0x010
+	
+	start

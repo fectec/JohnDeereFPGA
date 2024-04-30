@@ -1,8 +1,8 @@
-LIBRARY 	ieee;
-USE		ieee.STD_LOGIC_1164.all;
-USE		ieee.NUMERIC_STD.ALL;
+LIBRARY IEEE;
+USE	IEEE.STD_LOGIC_1164.ALL;
+USE	IEEE.NUMERIC_STD.ALL;
 
-ENTITY Interface IS
+ENTITY interface IS
 
 	PORT	(	
 				CLOCK_50	: IN		STD_LOGIC;
@@ -22,36 +22,75 @@ ENTITY Interface IS
 				GSENSOR_SCLK	: OUT		STD_LOGIC
 		);
 		
-END ENTITY Interface;
+END ENTITY interface;
 
-ARCHITECTURE Structural OF Interface IS
+ARCHITECTURE Structural OF interface IS
 
+	COMPONENT gumnut_with_mem IS
+	
+		GENERIC ( 
+				IMem_file_name	: STRING := "gasm_text.dat";
+				DMem_file_name	: STRING := "gasm_data.dat";
+				debug 		: BOOLEAN := false 
+			);
+			
+		PORT	( 
+				clk_i		: IN 	STD_LOGIC;
+				rst_i 		: IN 	STD_LOGIC;
+				
+				-- I/O PORT bus
+				
+				PORT_cyc_o 	: OUT	STD_LOGIC;
+				PORT_stb_o 	: OUT	STD_LOGIC;
+				PORT_we_o 	: OUT	STD_LOGIC;
+				PORT_ack_i 	: IN	STD_LOGIC;
+				PORT_adr_o 	: OUT	UNSIGNED(7 DOWNTO 0);
+				PORT_dat_o 	: OUT	STD_LOGIC_VECTOR(7 DOWNTO 0);
+				PORT_dat_i 	: IN	STD_LOGIC_VECTOR(7 DOWNTO 0);
+				
+				-- INterrupts
+				
+				Int_req : IN STD_LOGIC;
+				Int_ack : OUT STD_LOGIC
+			);
+	
+	END COMPONENT gumnut_with_mem;
+	
 	COMPONENT uart IS
 
 		GENERIC (
-				 clk_freq  	:  INTEGER    := 50_000_000;  -- Frequency of system clock in Hertz
-				 baud_rate 	:  INTEGER    := 115_200;     -- Data link baud rate in bits/second
-				 os_rate   	:  INTEGER    := 16;          -- Oversampling rate to find center of receive bits (in samples per baud period)
-				 d_width   	:  INTEGER    := 8;           -- Data bus width
-				 parity    	:  INTEGER    := 0;           -- 0 for no parity, 1 for parity
+				 clk_freq  	:  integer    := 50_000_000;  -- Frequency of system clock IN Hertz
+				 baud_rate 	:  integer    := 115_200;     -- Data lINk baud rate IN bits/second
+				 os_rate   	:  integer    := 16;          -- OversamplINg rate to fINd center of receive bits (IN samples per baud period)
+				 d_width   	:  integer    := 8;           -- Data bus width
+				 parity    	:  integer    := 0;           -- 0 for no parity, 1 for parity
 				 parity_eo 	:  STD_LOGIC  := '0'          -- '0' for even, '1' for odd parity
-			;
+			);
 			
 		PORT	(
 				 clk     	:  IN   STD_LOGIC;                             	-- System clock
 				 reset_n  	:  IN   STD_LOGIC;                             	-- Ascynchronous reset
-				 tx_ena   	:  IN   STD_LOGIC;                             	-- Initiate transmission
+				 tx_ena   	:  IN   STD_LOGIC;                             	-- INitiate transmission
 				 tx_data  	:  IN   STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data to transmit
-				 rx       	:  IN   STD_LOGIC;                             	-- Receive pin
-				 rx_busy  	:  OUT  STD_LOGIC;                             	-- Data reception in progress, LEDR(9)
+				 rx       	:  IN   STD_LOGIC;                             	-- Receive pIN
+				 rx_busy  	:  OUT  STD_LOGIC;                             	-- Data reception IN progress, LEDR(9)
 				 rx_error 	:  OUT  STD_LOGIC;                             	-- Start, parity, or stop bit error detected
 				 rx_data  	:  OUT  STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data received
-				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission in progress, LEDR(8)
-				 tx       	:  OUT  STD_LOGIC				-- Transmit pin
+				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission IN progress, LEDR(8)
+				 tx       	:  OUT  STD_LOGIC				-- Transmit pIN
 			); 
 				
 	END COMPONENT uart;
 
+	COMPONENT Decoder_BCDTo7Seg IS
+
+		PORT	(	
+				bcd		:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
+				Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
+			);
+				
+	END COMPONENT Decoder_BCDTo7Seg;
+	
 	COMPONENT debounce IS
 	
 		PORT	(
@@ -61,15 +100,6 @@ ARCHITECTURE Structural OF Interface IS
 		);
 				
 	END COMPONENT debounce;
-	
-	COMPONENT Decoder_BCDTo7Seg IS
-
-		PORT	(	
-				Hex		:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
-				Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
-			);
-				
-	END COMPONENT Decoder_BCDTo7Seg;
 	
 	COMPONENT accelerometer IS
 	
@@ -86,6 +116,16 @@ ARCHITECTURE Structural OF Interface IS
 		
 	END COMPONENT accelerometer;
 	
+	-- Gumnut
+	
+	SIGNAL rst_i						:	STD_LOGIC;
+	SIGNAL port_cyc_o, port_stb_o, port_we_o, port_ack_i	:	STD_LOGIC;
+	SIGNAL port_adr_o					:	UNSIGNED(7 DOWNTO 0);
+	SIGNAL port_dat_o, port_dat_i				:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL int_req, int_ack					:	STD_LOGIC;
+	
+	-- UART
+	
 	SIGNAL reset_n_de10	:	STD_LOGIC := '1';
 	SIGNAL tx_ena_de10	: 	STD_LOGIC := '1';
 	SIGNAL tx_data_de10	: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -94,272 +134,165 @@ ARCHITECTURE Structural OF Interface IS
 	SIGNAL rx_data_de10	:	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL tx_busy_de10	:	STD_LOGIC;
 	
-	SIGNAL key0_db		: 	STD_LOGIC;
-	SIGNAL key1_db		: 	STD_LOGIC;
+	-- Decoder
+
+	SIGNAL bcd_i		:	STD_LOGIC_VECTOR(3 DOWNTO 0);
+	
+	-- Buttons
+	
+	SIGNAL key0_db, key1_db	:	STD_LOGIC;
+	
+	-- Accelerometer
 
 	SIGNAL acc_data_de10		:	STD_LOGIC_VECTOR(9 DOWNTO 0);
-	SIGNAL acc_data_de10_integer	:	INTEGER;
+	SIGNAL acc_data_de10_integer	:	integer;
 	
 	SIGNAL right_s, left_s		: STD_LOGIC;
 	
 BEGIN
+
+	rst_i <= '0';
 	
-		acc_data_de10 <= LEDR;
-		acc_data_de10_integer <= TO_INTEGER(UNSIGNED(acc_data_de10));
+	-- Gumnut
 	
-		uart_0		: uart 			PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
-		button_0	: debounce		PORT MAP( CLOCK_50, KEY(0), key0_db );
-		button_1	: debounce  		PORT MAP( CLOCK_50, KEY(1), key1_db );
-		decoder_0	: Decoder_BCDTo7Seg 	PORT MAP ( rx_data_de10(3 DOWNTO 0), segments );
-		acc_0		: accelerometer 	PORT MAP ( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
-		
-		-- Process to determine tractor's direction based on accelerometer data
-		
-		acc_to_d	: PROCESS ( CLOCK_50 )
-						
-		BEGIN	
-		
-			IF ( RISING_EDGE(CLOCK_50) ) THEN
-			
-				IF (acc_data_de10_integer >= 1 AND acc_data_de10_integer <= 12) THEN
-				
-					right_s <= '1';
-					left_s  <= '0';
-							
-				ELSIF (acc_data_de10_integer >= 64 AND acc_data_de10_integer <= 768) THEN
-				
-					left_s <= '1';
-					right_s <= '0';
-				
-				ELSIF (acc_data_de10_integer >= 16 AND acc_data_de10_integer <= 48) THEN
-				
-					left_s <= '0';
-					right_s <= '0';
-					
-				ELSE
-					
-					left_s <= '0';
-					right_s <= '0';
-										
-				END IF;
+	gumnut	:	COMPONENT	gumnut_with_mem 
+			PORT MAP	(
+						CLOCK_50,
+						rst_i,
+						port_cyc_o,
+						port_stb_o,
+						port_we_o,
+						port_ack_i,
+						port_adr_o( 7 DOWNTO 0 ),
+						port_dat_o( 7 DOWNTO 0 ),
+						port_dat_i( 7 DOWNTO 0 ),
+						int_req,
+						int_ack
+					);
 	
-			END IF;
-		
-		END PROCESS acc_to_d;
-					
-		--Process to transmit data according to the interface inputs
-		
-		data_fsm	: PROCESS( CLOCK_50 )
-		
-			TYPE FSM_STATE IS (IDLE, FIRST_GEAR, SECOND_GEAR, THIRD_GEAR, FOURTH_GEAR, FIFTH_GEAR, REVERSE_GEAR, THROTTLE, BRAKE, RIGHT_DIRECTION, LEFT_DIRECTION);
-			VARIABLE STATE	:	FSM_STATE	:=	IDLE;
-		
+	-- UART
+
+	uart_0		: uart 			PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
+	
+	-- Decoder
+	
+	decoder_0	: Decoder_BCDTo7Seg 	PORT MAP ( bcd_i, SEGMENTS );
+	
+	-- Buttons
+	
+	button_0	: debounce		PORT MAP( CLOCK_50, KEY(0), key0_db );
+	button_1	: debounce  		PORT MAP( CLOCK_50, KEY(1), key1_db );
+	
+	-- Accelerometer
+	
+	acc_0		: accelerometer 	PORT MAP ( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
+	
+	-- Gumnut & interfaces interaction
+	
+	-- Output => TX Data -> Data memory address : 
+	
+	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
-		
-			IF ( RISING_EDGE(CLOCK_50) ) THEN
-				
-				CASE STATE IS
-					
-					WHEN IDLE =>
-
-						IF (SW(0) = '1') THEN
-						
-							STATE := FIRST_GEAR;
-				
-						ELSIF (SW(1) = '1') THEN
-						
-							STATE := SECOND_GEAR;
-						
-						ELSIF (SW(2) = '1') THEN
-						
-							STATE := THIRD_GEAR;
-						
-						ELSIF (SW(3) = '1') THEN
-						
-							STATE := FOURTH_GEAR;
-						
-						ELSIF (SW(4) = '1') THEN
-						
-							STATE := FIFTH_GEAR;
-							
-						ELSIF (SW(5) = '1') THEN
-						
-							STATE := REVERSE_GEAR;
-							
-						ELSIF (key0_db = '1') THEN
-												
-							STATE := THROTTLE;
-						
-						ELSIF (key1_db = '1') THEN
-												
-							STATE := BRAKE;	
-							
-						ELSIF (right_s = '1') THEN
-												
-							STATE := RIGHT_DIRECTION;	
-							
-						ELSIF (left_s = '1') THEN
-												
-							STATE := LEFT_DIRECTION;	
-						
-						ELSE	
-						
-							STATE := IDLE;
-							
-						END IF;
-					
-					WHEN FIRST_GEAR =>
-					
-						IF (SW(0) = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-					
-					WHEN SECOND_GEAR =>
-						
-						IF (SW(1) = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-					
-					WHEN THIRD_GEAR =>
-					
-						IF (SW(2) = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-							
-					WHEN FOURTH_GEAR =>
-					
-						IF (SW(3) = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-					
-					WHEN FIFTH_GEAR =>
-					
-						IF (SW(4) = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-							
-					WHEN REVERSE_GEAR =>
-					
-						IF (SW(5) = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-					
-					WHEN THROTTLE =>
-					
-						IF (key0_db = '0') THEN
-					
-							STATE := IDLE;
-
-						END IF;
-						
-					WHEN BRAKE =>			
-					
-						IF (key1_db = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-						
-					WHEN RIGHT_DIRECTION =>			
-					
-						IF (right_s = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-						
-					WHEN LEFT_DIRECTION =>			
-					
-						IF (left_s = '0') THEN
-						
-							STATE := IDLE;
-
-						END IF;
-						
-					WHEN OTHERS =>
-					
-						STATE := IDLE;
-					
-				END CASE;
-				
-				CASE STATE IS
-				
-					WHEN IDLE =>
-					
-						tx_ena_de10 <= '1';
-
-					WHEN OTHERS =>
-					 
-						tx_ena_de10 <= '0';
-						
-				END CASE;
+			IF rst_i = '0' THEN
 			
-				CASE STATE IS
-					
-					WHEN IDLE =>
-						
-						tx_data_de10 <= (OTHERS => '0');
-						
-					WHEN FIRST_GEAR =>
-						
-						tx_data_de10 <= "00000001";
-						
-					WHEN SECOND_GEAR =>
-
-						tx_data_de10 <= "00000010";
-						
-					WHEN THIRD_GEAR =>
-
-						tx_data_de10 <= "00000011";
-						
-					WHEN FOURTH_GEAR =>
-
-						tx_data_de10 <= "00000100";
-						
-					WHEN FIFTH_GEAR =>
-
-						tx_data_de10 <= "00000101";
-					
-					WHEN REVERSE_GEAR =>
-
-						tx_data_de10 <= "00000110";
-						
-					WHEN THROTTLE =>			
-
-						tx_data_de10 <= "00000111";
-
-					WHEN BRAKE =>
-
-						tx_data_de10 <= "00001000";
-						
-					WHEN RIGHT_DIRECTION =>
-
-						tx_data_de10 <= "00001001";
-						
-					WHEN LEFT_DIRECTION =>
-
-						tx_data_de10 <= "00001010";
-						
-					WHEN OTHERS =>
-					
-						tx_data_de10 <= (OTHERS => '0');
-						
-				END CASE;
+				tx_data_de10 <= ( OTHERS => '0' );
 				
+			ELSIF RISING_EDGE( CLOCK_50 ) THEN
+			
+				IF	port_adr_o = "00000000"	-- Address port
+				AND 	port_cyc_o = '1'	-- Control signals for I/OF
+				AND	port_stb_o = '1'	
+				AND	port_we_o  = '1'	-- Write
+				THEN
+				
+					tx_data_de10 <= port_dat_o;
+					
+				END IF;
 			END IF;
+	END PROCESS;
+	
+	-- Output => TX Start -> Data memory address :
+	
+	PROCESS ( CLOCK_50, rst_i )
+		BEGIN
+			IF rst_i = '0' THEN
 			
-	END PROCESS data_fsm;
-							
+				tx_ena_de10 <= '1';
+				
+			ELSIF RISING_EDGE( CLOCK_50 ) THEN
+			
+				IF	port_adr_o = "00000001"	-- Address port
+				AND 	port_cyc_o = '1'	-- Control signals for I/OF
+				AND	port_stb_o = '1'	
+				AND	port_we_o  = '1'	-- Write
+				THEN
+				
+					tx_ena_de10 <= port_dat_o(0);
+					
+				END IF;
+			END IF;
+	END PROCESS;	
+	
+	-- Output => Displays -> Data memory address :			
+			
+	PROCESS ( CLOCK_50, rst_i )
+		BEGIN
+			IF rst_i = '0' THEN
+			
+				bcd_i <= ( OTHERS => '0' );
+				
+			ELSIF RISING_EDGE( CLOCK_50 ) THEN
+			
+				IF	port_adr_o = "00000010"	-- Address port
+				AND 	port_cyc_o = '1'	-- Control signals for I/OF
+				AND	port_stb_o = '1'	
+				AND	port_we_o  = '1'	-- Write
+				THEN
+				
+					bcd_i <= port_dat_o(3 DOWNTO 0);
+					
+				END IF;
+			END IF;
+	END PROCESS;		ww	
+	
+	-- Inputs
+	
+	PROCESS ( CLOCK_50, rst_i )
+		BEGIN
+			IF rst_i = '0' THEN
+			
+				port_dat_i <= ( OTHERS => '0' );
+				
+			ELSIF RISING_EDGE( CLOCK_50 ) THEN
+			
+				IF	port_cyc_o = '1'	-- Control signals for I/OF
+				AND	port_stb_o = '1'	
+				AND	port_we_o  = '0'	-- Read
+				THEN
+				
+					IF	port_adr_o = "00000011"	THEN	-- Input => RX Data -> Data memory address :	
+						
+						port_dat_i <= "0000000" & rx_data_de10(0);
+				
+					IF	port_adr_o = "00000100"	THEN	-- Input => KEY 0 -> Data memory address :	
+						
+						port_dat_i <= "0000000" & key0_db;
+						
+					ELSIF	port_adr_o = "00000101"	THEN	-- Input => KEY 1 -> Data memory address :
+					
+						port_dat_i <= "0000000" & key1_db;w
+						
+					ELSIF	port_adr_o = "00000110"	THEN	-- Input => SWITCHES -> Data memory address :	
+						
+						port_dat_i <= "00" & SW(5 DOWNTO 0);
+						
+					ELSIF	port_adr_o = "00000111"	THEN	-- Input => Accelerometer -> Data memory address :		
+						
+						port_dat_i <= LEDR(8 DOWNTO 1);
+					
+					END IF;
+				END IF;
+			END IF;
+	END PROCESS;	
+		
 END Structural;

@@ -22,8 +22,8 @@
 --    
 --------------------------------------------------------------------------------
 
-LIBRARY ieee;
-USE ieee.std_logic_1164.all;
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
 
 ENTITY uart IS
   GENERIC(
@@ -126,7 +126,7 @@ BEGIN
           IF(os_count < os_rate-1) THEN                          --not center of bit
             os_count := os_count + 1;                              --increment oversampling pulse counter
             rx_state <= receive;                                   --remain in receive state
-          ELSIF(rx_count < parity+d_width) THEN                  --center of bit and not all bits received
+          ELSIF(rx_count < parity+d_width) THEN                  --center of bit and not ALL bits received
             os_count := 0;                                         --reset oversampling pulse counter    
             rx_count := rx_count + 1;                              --increment number of bits received counter
             rx_buffer <= rx & rx_buffer(parity+d_width DOWNTO 1);  --shift new received bit into receive buffer
@@ -179,9 +179,9 @@ BEGIN
             tx_count := tx_count + 1;                                 --increment transmit bit counter
             tx_buffer <= '1' & tx_buffer(parity+d_width+1 DOWNTO 1);  --shift transmit buffer to output next bit
           END IF;
-          IF(tx_count < parity+d_width+3) THEN                      --not all bits transmitted
+          IF(tx_count < parity+d_width+3) THEN                      --not ALL bits transmitted
             tx_state <= transmit;                                     --remain in transmit state
-          ELSE                                                      --all bits transmitted
+          ELSE                                                      --ALL bits transmitted
             tx_state <= idle;                                         --return to idle state
           END IF;
       END CASE;
