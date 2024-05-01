@@ -1,13 +1,14 @@
 LIBRARY IEEE;
+LIBRARY IEEE;
 USE	IEEE.STD_LOGIC_1164.ALL;
 USE	IEEE.NUMERIC_STD.ALL;
 
-ENTITY Interface IS
+ENTITY interface IS
 
 	PORT	(	
 				CLOCK_50	: IN		STD_LOGIC;
-				KEY		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				SW		: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
+				KEY			: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				SW			: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
 				GPIO_24		: IN		STD_LOGIC;	--RX
 				GPIO_25		: OUT 		STD_LOGIC;	--TX
 				LEDR		: BUFFER 	STD_LOGIC_VECTOR(9 DOWNTO 0);
@@ -15,43 +16,52 @@ ENTITY Interface IS
 				
 				-- Accelerometer
 				
-				GSENSOR_INT	: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI	: INOUT		STD_LOGIC;
-				GSENSOR_SDO	: INOUT		STD_LOGIC;
+				GSENSOR_INT		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI		: INOUT		STD_LOGIC;
+				GSENSOR_SDO		: INOUT		STD_LOGIC;
 				GSENSOR_CS_N	: OUT		STD_LOGIC;
 				GSENSOR_SCLK	: OUT		STD_LOGIC
 		);
 		
-END ENTITY Interface;
+END ENTITY interface;
 
-ARCHITECTURE Structural OF Interface IS
-
+ARCHITECTURE Structural OF interface IS
+	
 	COMPONENT uart IS
 
 		GENERIC (
-				 clk_freq  	:  INTEGER    := 50_000_000;  -- Frequency of system clock in Hertz
-				 baud_rate 	:  INTEGER    := 115_200;     -- Data link baud rate in bits/second
-				 os_rate   	:  INTEGER    := 16;          -- Oversampling rate to find center of receive bits (in samples per baud period)
-				 d_width   	:  INTEGER    := 8;           -- Data bus width
-				 parity    	:  INTEGER    := 0;           -- 0 for no parity, 1 for parity
+				 clk_freq  	:  integer    := 50_000_000;  -- Frequency of system clock IN Hertz
+				 baud_rate 	:  integer    := 115_200;     -- Data lINk baud rate IN bits/second
+				 os_rate   	:  integer    := 16;          -- OversamplINg rate to fINd center of receive bits (IN samples per baud period)
+				 d_width   	:  integer    := 8;           -- Data bus width
+				 parity    	:  integer    := 0;           -- 0 for no parity, 1 for parity
 				 parity_eo 	:  STD_LOGIC  := '0'          -- '0' for even, '1' for odd parity
-			;
+			);
 			
 		PORT	(
 				 clk     	:  IN   STD_LOGIC;                             	-- System clock
 				 reset_n  	:  IN   STD_LOGIC;                             	-- Ascynchronous reset
-				 tx_ena   	:  IN   STD_LOGIC;                             	-- Initiate transmission
+				 tx_ena   	:  IN   STD_LOGIC;                             	-- INitiate transmission
 				 tx_data  	:  IN   STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data to transmit
-				 rx       	:  IN   STD_LOGIC;                             	-- Receive pin
-				 rx_busy  	:  OUT  STD_LOGIC;                             	-- Data reception in progress, LEDR(9)
+				 rx       	:  IN   STD_LOGIC;                             	-- Receive pIN
+				 rx_busy  	:  OUT  STD_LOGIC;                             	-- Data reception IN progress, LEDR(9)
 				 rx_error 	:  OUT  STD_LOGIC;                             	-- Start, parity, or stop bit error detected
 				 rx_data  	:  OUT  STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data received
-				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission in progress, LEDR(8)
-				 tx       	:  OUT  STD_LOGIC				-- Transmit pin
+				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission IN progress, LEDR(8)
+				 tx       	:  OUT  STD_LOGIC								-- Transmit pIN
 			); 
 				
 	END COMPONENT uart;
 
+	COMPONENT Decoder_BCDTo7Seg IS
+
+		PORT	(	
+				bcd			:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
+				Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
+			);
+				
+	END COMPONENT Decoder_BCDTo7Seg;
+	
 	COMPONENT debounce IS
 	
 		PORT	(
@@ -62,56 +72,53 @@ ARCHITECTURE Structural OF Interface IS
 				
 	END COMPONENT debounce;
 	
-	COMPONENT Decoder_BCDTo7Seg IS
-
-		PORT	(	
-				Hex		:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
-				Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
-			);
-				
-	END COMPONENT Decoder_BCDTo7Seg;
-	
 	COMPONENT accelerometer IS
 	
 		PORT	(			
-				CLOCK_50	: IN	STD_LOGIC;
-				KEY		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_INT	: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI	: INOUT	STD_LOGIC;
-				GSENSOR_SDO	: INOUT	STD_LOGIC;
+				CLOCK_50		: IN	STD_LOGIC;
+				KEY				: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_INT		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI		: INOUT	STD_LOGIC;
+				GSENSOR_SDO		: INOUT	STD_LOGIC;
 				GSENSOR_CS_N	: OUT	STD_LOGIC;
 				GSENSOR_SCLK	: OUT	STD_LOGIC;
-				LEDR		: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
+				LEDR			: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
 			);
 		
 	END COMPONENT accelerometer;
 	
-	SIGNAL reset_n_de10	:	STD_LOGIC := '1';
-	SIGNAL tx_ena_de10	: 	STD_LOGIC := '1';
-	SIGNAL tx_data_de10	: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	SIGNAL rx_busy_de10	: 	STD_LOGIC;
+	-- UART
+	
+	SIGNAL reset_n_de10		:	STD_LOGIC := '1';
+	SIGNAL tx_ena_de10		: 	STD_LOGIC := '1';
+	SIGNAL tx_data_de10		: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL rx_busy_de10		: 	STD_LOGIC;
 	SIGNAL rx_error_de10	:	STD_LOGIC;
-	SIGNAL rx_data_de10	:	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	SIGNAL tx_busy_de10	:	STD_LOGIC;
+	SIGNAL rx_data_de10		:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL tx_busy_de10		:	STD_LOGIC;
+	
+	-- Buttons 
 	
 	SIGNAL key0_db		: 	STD_LOGIC;
 	SIGNAL key1_db		: 	STD_LOGIC;
+	
+	-- Accelerometer
 
-	SIGNAL acc_data_de10		:	STD_LOGIC_VECTOR(9 DOWNTO 0);
+	SIGNAL acc_data_de10			:	STD_LOGIC_VECTOR(9 DOWNTO 0);
 	SIGNAL acc_data_de10_integer	:	INTEGER;
 	
-	SIGNAL right_s, left_s		: STD_LOGIC;
+	SIGNAL right_s, left_s			: STD_LOGIC;
 	
 BEGIN
 	
 		acc_data_de10 <= LEDR;
 		acc_data_de10_integer <= TO_INTEGER(UNSIGNED(acc_data_de10));
 	
-		uart_0		: uart 			PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
-		button_0	: debounce		PORT MAP( CLOCK_50, KEY(0), key0_db );
+		uart_0		: uart 				PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
+		button_0	: debounce			PORT MAP( CLOCK_50, KEY(0), key0_db );
 		button_1	: debounce  		PORT MAP( CLOCK_50, KEY(1), key1_db );
-		decoder_0	: Decoder_BCDTo7Seg 	PORT MAP ( rx_data_de10(3 DOWNTO 0), segments );
-		acc_0		: accelerometer 	PORT MAP ( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
+		decoder_0	: Decoder_BCDTo7Seg PORT MAP( rx_data_de10(3 DOWNTO 0), segments );
+		acc_0		: accelerometer 	PORT MAP( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
 		
 		-- Process to determine tractor's direction based on accelerometer data
 		

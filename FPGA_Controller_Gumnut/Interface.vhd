@@ -6,8 +6,8 @@ ENTITY interface IS
 
 	PORT	(	
 				CLOCK_50	: IN		STD_LOGIC;
-				KEY		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				SW		: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
+				KEY			: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				SW			: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
 				GPIO_24		: IN		STD_LOGIC;	--RX
 				GPIO_25		: OUT 		STD_LOGIC;	--TX
 				LEDR		: BUFFER 	STD_LOGIC_VECTOR(9 DOWNTO 0);
@@ -15,9 +15,9 @@ ENTITY interface IS
 				
 				-- Accelerometer
 				
-				GSENSOR_INT	: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI	: INOUT		STD_LOGIC;
-				GSENSOR_SDO	: INOUT		STD_LOGIC;
+				GSENSOR_INT		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI		: INOUT		STD_LOGIC;
+				GSENSOR_SDO		: INOUT		STD_LOGIC;
 				GSENSOR_CS_N	: OUT		STD_LOGIC;
 				GSENSOR_SCLK	: OUT		STD_LOGIC
 		);
@@ -31,7 +31,7 @@ ARCHITECTURE Structural OF interface IS
 		GENERIC ( 
 				IMem_file_name	: STRING := "gasm_text.dat";
 				DMem_file_name	: STRING := "gasm_data.dat";
-				debug 		: BOOLEAN := false 
+				debug 			: BOOLEAN := false 
 			);
 			
 		PORT	( 
@@ -77,7 +77,7 @@ ARCHITECTURE Structural OF interface IS
 				 rx_error 	:  OUT  STD_LOGIC;                             	-- Start, parity, or stop bit error detected
 				 rx_data  	:  OUT  STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data received
 				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission IN progress, LEDR(8)
-				 tx       	:  OUT  STD_LOGIC				-- Transmit pIN
+				 tx       	:  OUT  STD_LOGIC								-- Transmit pIN
 			); 
 				
 	END COMPONENT uart;
@@ -85,7 +85,7 @@ ARCHITECTURE Structural OF interface IS
 	COMPONENT Decoder_BCDTo7Seg IS
 
 		PORT	(	
-				bcd		:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
+				bcd			:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
 				Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
 			);
 				
@@ -104,39 +104,39 @@ ARCHITECTURE Structural OF interface IS
 	COMPONENT accelerometer IS
 	
 		PORT	(			
-				CLOCK_50	: IN	STD_LOGIC;
-				KEY		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_INT	: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI	: INOUT	STD_LOGIC;
-				GSENSOR_SDO	: INOUT	STD_LOGIC;
+				CLOCK_50		: IN	STD_LOGIC;
+				KEY				: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_INT		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI		: INOUT	STD_LOGIC;
+				GSENSOR_SDO		: INOUT	STD_LOGIC;
 				GSENSOR_CS_N	: OUT	STD_LOGIC;
 				GSENSOR_SCLK	: OUT	STD_LOGIC;
-				LEDR		: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
+				LEDR			: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
 			);
 		
 	END COMPONENT accelerometer;
 	
 	-- Gumnut
 	
-	SIGNAL rst_i						:	STD_LOGIC;
+	SIGNAL rst_i											:	STD_LOGIC;
 	SIGNAL port_cyc_o, port_stb_o, port_we_o, port_ack_i	:	STD_LOGIC;
-	SIGNAL port_adr_o					:	UNSIGNED(7 DOWNTO 0);
-	SIGNAL port_dat_o, port_dat_i				:	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	SIGNAL int_req, int_ack					:	STD_LOGIC;
+	SIGNAL port_adr_o										:	UNSIGNED(7 DOWNTO 0);
+	SIGNAL port_dat_o, port_dat_i							:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL int_req, int_ack									:	STD_LOGIC;
 	
 	-- UART
 	
-	SIGNAL reset_n_de10	:	STD_LOGIC := '1';
-	SIGNAL tx_ena_de10	: 	STD_LOGIC := '1';
-	SIGNAL tx_data_de10	: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	SIGNAL rx_busy_de10	: 	STD_LOGIC;
+	SIGNAL reset_n_de10		:	STD_LOGIC := '1';
+	SIGNAL tx_ena_de10		: 	STD_LOGIC := '1';
+	SIGNAL tx_data_de10		: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL rx_busy_de10		: 	STD_LOGIC;
 	SIGNAL rx_error_de10	:	STD_LOGIC;
-	SIGNAL rx_data_de10	:	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	SIGNAL tx_busy_de10	:	STD_LOGIC;
+	SIGNAL rx_data_de10		:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL tx_busy_de10		:	STD_LOGIC;
 	
 	-- Decoder
 
-	SIGNAL bcd_i		:	STD_LOGIC_VECTOR(3 DOWNTO 0);
+	SIGNAL bcd_i			:	STD_LOGIC_VECTOR(3 DOWNTO 0);
 	
 	-- Buttons
 	
@@ -144,10 +144,10 @@ ARCHITECTURE Structural OF interface IS
 	
 	-- Accelerometer
 
-	SIGNAL acc_data_de10		:	STD_LOGIC_VECTOR(9 DOWNTO 0);
+	SIGNAL acc_data_de10			:	STD_LOGIC_VECTOR(9 DOWNTO 0);
 	SIGNAL acc_data_de10_integer	:	integer;
 	
-	SIGNAL right_s, left_s		: STD_LOGIC;
+	SIGNAL right_s, left_s	:	STD_LOGIC;
 	
 BEGIN
 
@@ -172,7 +172,7 @@ BEGIN
 	
 	-- UART
 
-	uart_0		: uart 			PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
+	uart_0		: uart 					PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
 	
 	-- Decoder
 	
@@ -180,12 +180,12 @@ BEGIN
 	
 	-- Buttons
 	
-	button_0	: debounce		PORT MAP( CLOCK_50, KEY(0), key0_db );
-	button_1	: debounce  		PORT MAP( CLOCK_50, KEY(1), key1_db );
+	button_0	: debounce				PORT MAP( CLOCK_50, KEY(0), key0_db );
+	button_1	: debounce  			PORT MAP( CLOCK_50, KEY(1), key1_db );
 	
 	-- Accelerometer
 	
-	acc_0		: accelerometer 	PORT MAP ( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
+	acc_0		: accelerometer 		PORT MAP ( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
 	
 	-- Gumnut & interfaces interaction
 	
