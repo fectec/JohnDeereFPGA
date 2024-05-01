@@ -6,178 +6,178 @@
 
 	data
 	
-	TX_Data_o		:	bss 1	; Data memory address : 0x000
-	TX_Start_o		:	bss 1	; Data memory address : 0x001
-	BCD_o			:	bss 1	; Data memory address : 0x010
+	TX_Data_o	:	bss 1	; Data memory address : 0x000
+	TX_Start_o	:	bss 1	; Data memory address : 0x001
+	BCD_o		:	bss 1	; Data memory address : 0x010
 	
-	RX_Data_i		:	bss 1	; Data memory address : 0x011
-	KEY_0_i			:	bss 1	; Data memory address : 0x100
-	KEY_1_i			:	bss 1	; Data memory address : 0x101
-	SWITCHES_i		:	bss 1	; Data memory address : 0x110
-	ACC_i			:	bss 1	; Data memory address : 0x111
+	RX_Data_i	:	bss 1	; Data memory address : 0x011
+	KEY_0_i		:	bss 1	; Data memory address : 0x100
+	KEY_1_i		:	bss 1	; Data memory address : 0x101
+	SWITCHES_i	:	bss 1	; Data memory address : 0x110
+	ACC_i		:	bss 1	; Data memory address : 0x111
 	
 ; Main program
 	
 	text
 	org 0x010
 	
-	inputs			:	inp	r1, RX_Data_i
-						and r0, r1, 1
-						bnz RX_Data_Eq_1
-						
-						inp r1, KEY_0_i
-						and r0, r1, 1
-						bnz KEY_0_Eq_1
-						
-						inp r1, KEY_1_i
-						and r0, r1, 1
-						bnz KEY_1_Eq_1
-						
-						inp r1, SWITCHES_i
-						
-						and r0, r1, 1
-						bnz SWITCHES_0_Eq_1		;	First gear
-						
-						and r0, r1, 2
-						bnz SWITCHES_1_Eq_1		;	Second gear
-						
-						and r0, r1, 4
-						bnz SWITCHES_2_Eq_1		;	Third gear
-						
-						and r0, r1, 8
-						bnz SWITCHES_3_Eq_1		;	Fourth gear
-						
-						and r0, r1, 16
-						bnz SWITCHES_4_Eq_1		;	Fifth gear
-						
-						and r0, r1, 32
-						bnz SWITCHES_5_Eq_1		;	Reverse gear
-						
-						inp r1, ACC_i
-						
-						; Right
-						
-						and r0, r1, 1
-						bnz ACC_Eq_Right
-						
-						and r0, r1, 3
-						bnz ACC_Eq_Right
-						
-						and r0, r1, 2
-						bnz ACC_Eq_Right
-						
-						and r0, r1, 6
-						bnz ACC_Eq_Right
-						
-						and r0, r1, 4
-						bnz ACC_Eq_Right
-						
-						; Center
-						
-						and r0, r1, 12
-						bnz ACC_Eq_Center
-						
-						and r0, r1, 8
-						bnz ACC_Eq_Center
-						
-						and r0, r1, 24
-						bnz ACC_Eq_Center
-						
-						and r0, r1, 16
-						bnz ACC_Eq_Center
-						
-						and r0, r1, 48
-						bnz ACC_Eq_Center
-						
-						; Left
-						
-						and r0, r1, 32
-						bnz ACC_Eq_Left
-						
-						and r0, r1, 96
-						bnz ACC_Eq_Left
-						
-						and r0, r1, 64
-						bnz ACC_Eq_Left
-						
-						and r0, r1, 192
-						bnz ACC_Eq_Left
-						
-						and r0, r1, 128
-						bnz ACC_Eq_Left
-						
-						jmp inputs
+	inputs		:	inp r1, RX_Data_i
+				and r0, r1, 1
+				bnz RX_Data_Eq_1
+				
+				inp r1, KEY_0_i
+				and r0, r1, 1
+				bnz KEY_0_Eq_1
+				
+				inp r1, KEY_1_i
+				and r0, r1, 1
+				bnz KEY_1_Eq_1
+				
+				inp r1, SWITCHES_i
+				
+				and r0, r1, 1
+				bnz SWITCHES_0_Eq_1		;	First gear
+				
+				and r0, r1, 2
+				bnz SWITCHES_1_Eq_1		;	Second gear
+				
+				and r0, r1, 4
+				bnz SWITCHES_2_Eq_1		;	Third gear
+				
+				and r0, r1, 8
+				bnz SWITCHES_3_Eq_1		;	Fourth gear
+				
+				and r0, r1, 16
+				bnz SWITCHES_4_Eq_1		;	Fifth gear
+				
+				and r0, r1, 32
+				bnz SWITCHES_5_Eq_1		;	Reverse gear
+				
+				inp r1, ACC_i
+				
+				; Right
+				
+				and r0, r1, 1
+				bnz ACC_Eq_Right
+				
+				and r0, r1, 3
+				bnz ACC_Eq_Right
+				
+				and r0, r1, 2
+				bnz ACC_Eq_Right
+				
+				and r0, r1, 6
+				bnz ACC_Eq_Right
+				
+				and r0, r1, 4
+				bnz ACC_Eq_Right
+				
+				; Center
+				
+				and r0, r1, 12
+				bnz ACC_Eq_Center
+				
+				and r0, r1, 8
+				bnz ACC_Eq_Center
+				
+				and r0, r1, 24
+				bnz ACC_Eq_Center
+				
+				and r0, r1, 16
+				bnz ACC_Eq_Center
+				
+				and r0, r1, 48
+				bnz ACC_Eq_Center
+				
+				; Left
+				
+				and r0, r1, 32
+				bnz ACC_Eq_Left
+				
+				and r0, r1, 96
+				bnz ACC_Eq_Left
+				
+				and r0, r1, 64
+				bnz ACC_Eq_Left
+				
+				and r0, r1, 192
+				bnz ACC_Eq_Left
+				
+				and r0, r1, 128
+				bnz ACC_Eq_Left
+				
+				jmp inputs
 	
 	RX_Data_Eq_1	:	ldm r2, BCD_o
-						add r2, r2, 1
-						stm r2, BCD_o
+				add r2, r2, 1
+				stm r2, BCD_o
+				
+				out r2, BCD_o
+				
+				jmp inputs
 						
-						out r2, BCD_o
-						
-						jmp inputs
-						
-	KEY_0_Eq_1		:	add r2, r2, 7
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+	KEY_0_Eq_1	:	add r2, r2, 7
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
-	KEY_1_Eq_1		:	add r2, r2, 8
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+	KEY_1_Eq_1	:	add r2, r2, 8
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
 	SWITCHES_0_Eq_1	:	add r2, r2, 1
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 						
 	SWITCHES_1_Eq_1	:	add r2, r2, 2
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
 	SWITCHES_2_Eq_1	:	add r2, r2, 3
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 		
 	SWITCHES_3_Eq_1	:	add r2, r2, 4
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
 	SWITCHES_4_Eq_1	:	add r2, r2, 5
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
 	SWITCHES_5_Eq_1	:	add r2, r2, 6
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
 	ACC_Eq_Right	:	add r2, r2, 9
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
 	ACC_Eq_Center	:	jmp	inputs
 	
-	ACC_Eq_Left		:	add r2, r2, 10
-						out r2, TX_Data_o
-						jsb Enable_TX
-						
-						jmp inputs
+	ACC_Eq_Left	:	add r2, r2, 10
+				out r2, TX_Data_o
+				jsb Enable_TX
+				
+				jmp inputs
 	
-	Enable_TX		:	out r0, TX_Start_o
-						ret 
+	Enable_TX	:	out r0, TX_Start_o
+				ret 
 						

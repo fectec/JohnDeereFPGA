@@ -7,8 +7,8 @@ ENTITY interface IS
 
 	PORT	(	
 				CLOCK_50	: IN		STD_LOGIC;
-				KEY			: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				SW			: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
+				KEY		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				SW		: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
 				GPIO_24		: IN		STD_LOGIC;	--RX
 				GPIO_25		: OUT 		STD_LOGIC;	--TX
 				LEDR		: BUFFER 	STD_LOGIC_VECTOR(9 DOWNTO 0);
@@ -16,9 +16,9 @@ ENTITY interface IS
 				
 				-- Accelerometer
 				
-				GSENSOR_INT		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI		: INOUT		STD_LOGIC;
-				GSENSOR_SDO		: INOUT		STD_LOGIC;
+				GSENSOR_INT	: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI	: INOUT		STD_LOGIC;
+				GSENSOR_SDO	: INOUT		STD_LOGIC;
 				GSENSOR_CS_N	: OUT		STD_LOGIC;
 				GSENSOR_SCLK	: OUT		STD_LOGIC
 		);
@@ -56,7 +56,7 @@ ARCHITECTURE Structural OF interface IS
 	COMPONENT Decoder_BCDTo7Seg IS
 
 		PORT	(	
-				bcd			:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
+				bcd		:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
 				Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
 			);
 				
@@ -75,14 +75,14 @@ ARCHITECTURE Structural OF interface IS
 	COMPONENT accelerometer IS
 	
 		PORT	(			
-				CLOCK_50		: IN	STD_LOGIC;
-				KEY				: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_INT		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
-				GSENSOR_SDI		: INOUT	STD_LOGIC;
-				GSENSOR_SDO		: INOUT	STD_LOGIC;
+				CLOCK_50	: IN	STD_LOGIC;
+				KEY		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_INT	: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+				GSENSOR_SDI	: INOUT	STD_LOGIC;
+				GSENSOR_SDO	: INOUT	STD_LOGIC;
 				GSENSOR_CS_N	: OUT	STD_LOGIC;
 				GSENSOR_SCLK	: OUT	STD_LOGIC;
-				LEDR			: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
+				LEDR		: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
 			);
 		
 	END COMPONENT accelerometer;
@@ -93,7 +93,7 @@ ARCHITECTURE Structural OF interface IS
 	SIGNAL tx_ena_de10		: 	STD_LOGIC := '1';
 	SIGNAL tx_data_de10		: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL rx_busy_de10		: 	STD_LOGIC;
-	SIGNAL rx_error_de10	:	STD_LOGIC;
+	SIGNAL rx_error_de10		:	STD_LOGIC;
 	SIGNAL rx_data_de10		:	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL tx_busy_de10		:	STD_LOGIC;
 	
@@ -104,20 +104,20 @@ ARCHITECTURE Structural OF interface IS
 	
 	-- Accelerometer
 
-	SIGNAL acc_data_de10			:	STD_LOGIC_VECTOR(9 DOWNTO 0);
+	SIGNAL acc_data_de10		:	STD_LOGIC_VECTOR(9 DOWNTO 0);
 	SIGNAL acc_data_de10_integer	:	INTEGER;
 	
-	SIGNAL right_s, left_s			: STD_LOGIC;
+	SIGNAL right_s, left_s		: STD_LOGIC;
 	
 BEGIN
 	
 		acc_data_de10 <= LEDR;
 		acc_data_de10_integer <= TO_INTEGER(UNSIGNED(acc_data_de10));
 	
-		uart_0		: uart 				PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
-		button_0	: debounce			PORT MAP( CLOCK_50, KEY(0), key0_db );
+		uart_0		: uart 			PORT MAP( CLOCK_50, reset_n_de10, tx_ena_de10, tx_data_de10, GPIO_24, rx_busy_de10, rx_error_de10, rx_data_de10, tx_busy_de10, GPIO_25 );
+		button_0	: debounce		PORT MAP( CLOCK_50, KEY(0), key0_db );
 		button_1	: debounce  		PORT MAP( CLOCK_50, KEY(1), key1_db );
-		decoder_0	: Decoder_BCDTo7Seg PORT MAP( rx_data_de10(3 DOWNTO 0), segments );
+		decoder_0	: Decoder_BCDTo7Seg 	PORT MAP( rx_data_de10(3 DOWNTO 0), segments );
 		acc_0		: accelerometer 	PORT MAP( CLOCK_50, "11", GSENSOR_INT, GSENSOR_SDI, GSENSOR_SDO, GSENSOR_CS_N, GSENSOR_SCLK, LEDR );
 		
 		-- Process to determine tractor's direction based on accelerometer data
