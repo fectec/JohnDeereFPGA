@@ -30,7 +30,7 @@
 	TEN		:	byte 10
 	
 	DELAY_VALUE_1	: 	byte 255
-	DELAY_VALUE_2	: 	byte 50
+	DELAY_VALUE_2	: 	byte 30
 
 ; Main program
 	
