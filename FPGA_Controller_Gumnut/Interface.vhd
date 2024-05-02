@@ -6,8 +6,8 @@ ENTITY interface IS
 
 	PORT	(	
 				CLOCK_50		: IN		STD_LOGIC;
-				KEY				: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
-				SW				: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
+				KEY			: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
+				SW			: IN		STD_LOGIC_VECTOR(9 DOWNTO 0);
 				GPIO_24			: IN		STD_LOGIC;	--RX
 				GPIO_25			: OUT 		STD_LOGIC;	--TX
 				LEDR			: BUFFER 	STD_LOGIC_VECTOR(9 DOWNTO 0);
@@ -18,8 +18,8 @@ ENTITY interface IS
 				GSENSOR_INT		: IN		STD_LOGIC_VECTOR(1 DOWNTO 0);
 				GSENSOR_SDI		: INOUT		STD_LOGIC;
 				GSENSOR_SDO		: INOUT		STD_LOGIC;
-				GSENSOR_CS_N	: OUT		STD_LOGIC;
-				GSENSOR_SCLK	: OUT		STD_LOGIC
+				GSENSOR_CS_N	        : OUT		STD_LOGIC;
+				GSENSOR_SCLK	        : OUT		STD_LOGIC
 		);
 		
 END ENTITY interface;
@@ -86,7 +86,7 @@ ARCHITECTURE Structural OF interface IS
 	COMPONENT Decoder_BCDTo7Seg IS
 
 		PORT	(	
-					bcd			:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
+					bcd		:	IN	STD_LOGIC_VECTOR(3 DOWNTO 0);
 					Segments	:	OUT	STD_LOGIC_VECTOR(13 DOWNTO 0)
 				);
 				
@@ -106,12 +106,12 @@ ARCHITECTURE Structural OF interface IS
 	
 		PORT	(			
 					CLOCK_50		: IN	STD_LOGIC;
-					KEY				: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
+					KEY			: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
 					GSENSOR_INT		: IN	STD_LOGIC_VECTOR(1 DOWNTO 0);
 					GSENSOR_SDI		: INOUT	STD_LOGIC;
 					GSENSOR_SDO		: INOUT	STD_LOGIC;
-					GSENSOR_CS_N	: OUT	STD_LOGIC;
-					GSENSOR_SCLK	: OUT	STD_LOGIC;
+					GSENSOR_CS_N	        : OUT	STD_LOGIC;
+					GSENSOR_SCLK	        : OUT	STD_LOGIC;
 					LEDR			: OUT	STD_LOGIC_VECTOR(9 DOWNTO 0)
 				);
 		
@@ -119,11 +119,11 @@ ARCHITECTURE Structural OF interface IS
 
 	-- Gumnut
 	
-	SIGNAL rst_i											:	STD_LOGIC;
+	SIGNAL rst_i						:	STD_LOGIC;
 	SIGNAL port_cyc_o, port_stb_o, port_we_o, port_ack_i	:	STD_LOGIC;
-	SIGNAL port_adr_o										:	UNSIGNED(7 DOWNTO 0);
-	SIGNAL port_dat_o, port_dat_i							:	STD_LOGIC_VECTOR(7 DOWNTO 0);
-	SIGNAL int_req, int_ack									:	STD_LOGIC;
+	SIGNAL port_adr_o					:	UNSIGNED(7 DOWNTO 0);
+	SIGNAL port_dat_o, port_dat_i				:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL int_req, int_ack					:	STD_LOGIC;
 
 	-- UART
 	
@@ -131,7 +131,7 @@ ARCHITECTURE Structural OF interface IS
 	SIGNAL tx_ena_de10			: 	STD_LOGIC := '1';
 	SIGNAL tx_data_de10			: 	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL rx_busy_de10			: 	STD_LOGIC;
-	SIGNAL rx_error_de10		:	STD_LOGIC;
+	SIGNAL rx_error_de10		        :	STD_LOGIC;
 	SIGNAL rx_data_de10			:	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL tx_busy_de10			:	STD_LOGIC;
 
@@ -149,8 +149,8 @@ ARCHITECTURE Structural OF interface IS
 	
 	-- Buttons
 	
-	SIGNAL key0_db, key1_db		:	STD_LOGIC;
-	SIGNAL key0_inp, key1_inp	:	STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL key0_db, key1_db		        :	STD_LOGIC;
+	SIGNAL key0_inp, key1_inp	        :	STD_LOGIC_VECTOR(7 DOWNTO 0);
 	
 	-- Accelerometer
 
@@ -165,43 +165,43 @@ BEGIN
 	
 	gumnut	:	COMPONENT	gumnut_with_mem 
 			PORT MAP	(
-							CLOCK_50,
-							rst_i,
-							port_cyc_o,
-							port_stb_o,
-							port_we_o,
-							port_ack_i,
-							port_adr_o( 7 DOWNTO 0 ),
-							port_dat_o( 7 DOWNTO 0 ),
-							port_dat_i( 7 DOWNTO 0 ),
-							int_req,
-							int_ack
-						);
+                                                CLOCK_50,
+                                                rst_i,
+                                                port_cyc_o,
+                                                port_stb_o,
+                                                port_we_o,
+                                                port_ack_i,
+                                                port_adr_o( 7 DOWNTO 0 ),
+                                                port_dat_o( 7 DOWNTO 0 ),
+                                                port_dat_i( 7 DOWNTO 0 ),
+                                                int_req,
+                                                int_ack
+					);
 					
 	-- UART
 
 	uart_0	: 	COMPONENT	uart	
 			PORT MAP	( 
-							CLOCK_50, 
-							reset_n_de10, 
-							tx_ena_de10, 
-							tx_data_de10, 
-							GPIO_24, 
-							rx_busy_de10, 
-							rx_error_de10, 
-							rx_data_de10, 
-							tx_busy_de10, 
-							GPIO_25 
-						);
+                                                CLOCK_50, 
+                                                reset_n_de10, 
+                                                tx_ena_de10, 
+                                                tx_data_de10, 
+                                                GPIO_24, 
+                                                rx_busy_de10, 
+                                                rx_error_de10, 
+                                                rx_data_de10, 
+                                                tx_busy_de10, 
+                                                GPIO_25 
+					);
 
 	-- Decoder
 	
-	decoder_0	: Decoder_BCDTo7Seg		PORT MAP ( bcd_i, SEGMENTS );
+	decoder_0	: Decoder_BCDTo7Seg	PORT MAP ( bcd_i, SEGMENTS );
 	
 	-- Buttons
 	
-	button_0	: debounce				PORT MAP( CLOCK_50, KEY(0), key0_db );
-	button_1	: debounce  			PORT MAP( CLOCK_50, KEY(1), key1_db );
+	button_0	: debounce		PORT MAP( CLOCK_50, KEY(0), key0_db );
+	button_1	: debounce  		PORT MAP( CLOCK_50, KEY(1), key1_db );
 	
 	-- Accelerometer
 	
@@ -267,7 +267,7 @@ BEGIN
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
 			
 				IF	port_adr_o = "00000010"	-- Address port
-				AND port_cyc_o = '1'	-- Control signals for I/O
+				AND     port_cyc_o = '1'	-- Control signals for I/O
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '1'	-- Write
 				THEN
@@ -289,7 +289,7 @@ BEGIN
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
 			
 				IF	port_adr_o = "00000011"
-				AND port_cyc_o = '1'	-- Control signals for I/O
+				AND     port_cyc_o = '1'	-- Control signals for I/O
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '0'	
 				THEN
@@ -311,7 +311,7 @@ BEGIN
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
 			
 				IF	port_adr_o = "00000100"
-				AND port_cyc_o = '1'	-- Control signals for I/O
+				AND     port_cyc_o = '1'	-- Control signals for I/O
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '0'	
 				THEN
@@ -333,7 +333,7 @@ BEGIN
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
 			
 				IF	port_adr_o = "00000101"
-				AND port_cyc_o = '1'	-- Control signals for I/O
+				AND     port_cyc_o = '1'	-- Control signals for I/O
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '0'	
 				THEN
@@ -355,7 +355,7 @@ BEGIN
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
 			
 				IF	port_adr_o = "00000110"
-				AND port_cyc_o = '1'	-- Control signals for I/O
+				AND     port_cyc_o = '1'	-- Control signals for I/O
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '0'	
 				THEN
@@ -377,7 +377,7 @@ BEGIN
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
 			
 				IF	port_adr_o = "00000111"
-				AND port_cyc_o = '1'	-- Control signals for I/O
+				AND     port_cyc_o = '1'	-- Control signals for I/O
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '0'	
 				THEN
@@ -392,11 +392,11 @@ BEGIN
 	
 	WITH port_adr_o SELECT	
 		
-		port_dat_i <=	RX_inp			WHEN "00000011",
-						switches_inp 	WHEN "00000100",
-						key0_inp 		WHEN "00000101",
-						key1_inp 		WHEN "00000110",
-						acc_inp			WHEN "00000111",
-						UNAFFECTED WHEN OTHERS;
+		port_dat_i <=	RX_inp	        WHEN "00000011",
+				switches_inp 	WHEN "00000100",
+				key0_inp 	WHEN "00000101",
+				key1_inp 	WHEN "00000110",
+				acc_inp		WHEN "00000111",
+				UNAFFECTED WHEN OTHERS;
 
 END Structural;
