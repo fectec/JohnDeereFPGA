@@ -66,11 +66,11 @@ COMPONENT led_driver IS
 
 	PORT ( 	
 	
-			iRSTN			: IN 			STD_LOGIC;
-			iCLK			: IN 			STD_LOGIC;
-			iDIG			: IN 			STD_LOGIC_VECTOR(9 DOWNTO 0);
-			iG_INT2			: IN 			STD_LOGIC;
-			oLED			: OUT 			STD_LOGIC_VECTOR(9 DOWNTO 0)
+			iRSTN				: IN 			STD_LOGIC;
+			iCLK				: IN 			STD_LOGIC;
+			iDIG				: IN 			STD_LOGIC_VECTOR(9 DOWNTO 0);
+			iG_INT2				: IN 			STD_LOGIC;
+			oLED				: OUT 			STD_LOGIC_VECTOR(9 DOWNTO 0)
 	);
 END COMPONENT;
 
