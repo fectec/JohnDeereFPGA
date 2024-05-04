@@ -69,6 +69,14 @@ Finally, the decoder receives the 4 least significant bits of *rx_data_of10*, th
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/119bbec1-9316-41cc-bccb-50ec59aeca0f" alt = "Signals on decoder component" width="400" height="360"/>
 </p>
 
+### Process of converting accelerometer data to a current orientation signal
+
+Now, the first clock-sensitive process pigeonholes the signal *acc_data_de10_integer* into a range and turns on a signal with the corresponding board orientation. In other words, a meaning is given to the orientation vector provided by the accelerometer, knowing that the accelerometer behaves in such a way that one or two LEDs move laterally depending on the rotation of the DE10-lite.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/4291b609-3acc-4795-bfb5-c4a42b914d62" alt = "Process of converting accelerometer data to a current orientation signal" width="300" height="250"/>
+</p>
+
 ## Gumnut implementation
 
 Still under work.
