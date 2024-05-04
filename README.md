@@ -42,7 +42,7 @@ Therefore, the components (one UART, two debounce, one decoder and one accelerom
 The debounce components receive the inputs from the bounced buttons, KEY(1:0), and debounce them. key0_db and key1_db capture the output of these components, and thus represent the state of the buttons after debouncing, so they will be used instead of their port equivalent.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ca0da354-4c27-4e5a-bfae-a99b7f77ead5" alt = "Signals on debounce components" width="400" height="250"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ca0da354-4c27-4e5a-bfae-a99b7f77ead5" alt = "Signals on debounce components" width="400" height="150"/>
 </p>
 
 ## Gumnut implementation
