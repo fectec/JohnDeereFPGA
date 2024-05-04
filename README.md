@@ -154,8 +154,43 @@ In line with the above, each of these elements has its own output process. The d
 Since the writing is to different signals, despite being carried out in different processes, it is not necessary to use a selection statute.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="300" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="400" height="500"/>
 </p>
+
+### Code in Gumnut Assembly
+
+Once this is established, the code requests the input of all the user interaction elements and verifies which one is the active one using an AND operation between the entered value and a mask specifically selected to achieve this purpose.
+
+For example, the 8-bit data representing the state of the switches is read by Gumnut and stored in r1. An AND is performed on this register with all the binary positions of the switches (1, 2, 4, 8, 16 and 32 in decimal or 00000001, 00000010, 00000100, 00001000, 00010000 and 00100000 in binary).
+
+If any of these operations does not turn on the flag Z (zero) flag, it means that its result was 1, so the current value of the switches and that of the mask is the same, resulting in the detection of the active switch, as the mask indicates its position.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/001c63f9-13d1-457f-97eb-77857bfa31c0" alt = "Identification of the active switch in Gasm" width="400" height="400"/>
+</p>
+
+The same applies for the accelerometer vector, where the masks represent all possible combinations, some being pigeonholed on the right and the remaining ones on the right.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/c3525645-80aa-4116-a1fc-3b52ac3c3852" alt = "Identifying the accelerometer orientation in Gasm" width="350" height="350"/>
+</p>
+
+As for the buttons, the mask is simply 1, because of the 8 bits received by Gumnut, only LSB has the information whether it is pressed or not. This is because port_dat_i is assigned seven zeros concatenated to the debounce signal value.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/450375db-0d08-499d-b45b-d60d94000e5a" alt = "Identification of the active button in Gasm" width="300" height="100"/>
+
+If all operations cause the Z flag to be set, i.e. their results are zero, it means that no element is being activated (no switch closed, no button pressed or accelerometer in the center), so it jumps to an IDLE tag that transmits on UART 0x00 through outputs on TX_Data_o and TX_Start_o, eventually received and interpreted by the top-entity. It should be noted, the enable/disable is a common tag to all transmissions.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/43c8d27e-aa95-4055-a019-93a0a8106059" alt = "IDLE and En_D_Tx tag" width="380" height="100"/>
+
+On the other hand, any operation that does not result in zero will jump to a label where the respective value will be transmitted to the active element, i.e. the one decoded by the Unity engine.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/46dcc057-f8a5-4d44-b85b-1d9e00e291e0" alt = "Transfer of the respective value to the active element" width="500" height="500"/>
+
+For the RX data or item counter, it will be received and sent back to the top-entity for decoding.
 
 ## Game Demos
 
