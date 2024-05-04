@@ -76,6 +76,22 @@ Now, the first clock-sensitive process pigeonholes the signal *acc_data_de10_int
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/1117d752-2fe4-40f6-913e-a8be95fba7c5" alt = "Process of converting accelerometer data to a current orientation signal" width="300" height="250"/>
 </p>
 
+### State machine process for selection and transmission of information
+
+The second process, a Moore FSM, uses the signals just analyzed. There are eleven states, each representing a tractor action: No motion, first, second, third, fourth and fifth gears, reverse, acceleration, braking, right and left turns.
+
+It starts from the IDLE state, and from this state it is possible to transition to any other state if the respective signal on the interface is activated.
+
+For example, if you want to use the first gear, assigned to the switch in the zero position of the board, you only need to turn it on. Thus there will be a transition to the FIRST_GEAR state, which will be maintained as long as the switch is not turned off.
+
+The action corresponding to all states excluding IDLE is to turn off the signal *tx_ena_de10 signal*, which activates the serial communication. Then, each state places a particular value in *tx_data_de10*, the data to be transmitted. In the case of FIRST_GEAR this is 0x01, which will be interpreted by Unity so that the tractor performs the corresponding action.
+
+In conclusion, no data is transmitted during the IDLE state. 
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ae6841e3-69f3-4d1b-80a4-29260a26c19c" alt = "State machine process for selection and transmission of information" width="400" height="150"/>
+</p>
+
 ## Gumnut implementation
 
 Still under work.
