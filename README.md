@@ -139,7 +139,7 @@ Also, each of these elements has its own input process, the difference being the
 It should be noted that the same port_dat_i signal would have to be written from different processes, which is not allowed. So intermediate signals are used, of which one is selected to be assigned to port_dat_i depending on port_adr_o, or the element that Gumnut requires.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/25522978-cb10-46ce-a7e5-048a31f39717" alt = "Input interface" width="220" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/25522978-cb10-46ce-a7e5-048a31f39717" alt = "Input interface" width="300" height="500"/>
 </p>
 
 On the other hand, the output processes from Gumnut differ from the previous ones only in the verification of the port_we_o signal, which must now be 1 because it is a write operation.
@@ -151,7 +151,7 @@ In line with the above, each of these elements has its own output process. The d
 Since the writing is to different signals, despite being carried out in different processes, it is not necessary to use a selection statute.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/8f9a75aa-1f66-4644-9cfb-4591e7154967" alt = "Output interface" width="220" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="300" height="500"/>
 </p>
 
 ## Game Demos
