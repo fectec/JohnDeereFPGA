@@ -208,7 +208,9 @@ For the RX data or item counter, it will be received and sent back to the top-en
 
 ### Unity & FPGA Control with Gumnut
 
-
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e7303f89-ab9c-4b49-8891-f81590358c2c" alt = "Game Control Demo with Gumnut" width="518" height="291"/>
+</p>
 
 ## Bonus - VGA Interface
 
