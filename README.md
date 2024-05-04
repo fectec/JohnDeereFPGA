@@ -18,6 +18,29 @@ This part relies on a *Moore's Finite State Machine*. It transitions to the stat
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/c63962ac-0404-47f9-9ca1-4f194da40d04" alt = "FSM" width="518" height="291"/>
 </p>
 
+### RTL-level design
+
+Five entities are handled, *interface* as the top-entity, *UART*, *Decoder_BCDTo7Seg*,
+*debounce* and *accelerometer*.
+
+![RTL design diagram complete and broken down by entities](https://github.com/fectec/JohnDeereFPGA/assets/127822858/73233dba-950d-4214-a62d-6b73cb9cb33d)
+
+### Top-entity
+
+The *top-entity* is an *interface* to the device, so the port consists of the clock, buttons, switches and GPIO 24, which acts as RX, as inputs; and GPIO 25, which acts as TX, LEDs and display segments as outputs. Additionally, there are definitions for the operation of the accelerometer.
+
+### Top-entity components
+
+Next, the components to be used are declared. The first one, “UART”, is responsible for the serial connection between the board and the personal computer. The second, “debounce”, debounces any button. The third one, “Decoder_BCDTo7Seg” is a 7-segment decoder. Finally, “accelerometer”, delivers the x-axis orientation data of the board.
+
+Therefore, the components (one UART, two debounce, one decoder and one accelerometer) are instantiated and a port map is made in such a way as to ensure their correct functionality. With the exception of the decoder, all are connected to CLOCK_50 of the interface port.
+
+## Signals on debounce components
+
+The debounce components receive the inputs from the bounced buttons, KEY(1:0), and debounce them. key0_db and key1_db capture the output of these components, and thus represent the state of the buttons after debouncing, so they will be used instead of their port equivalent.
+
+![Signals on debounce components](https://github.com/fectec/JohnDeereFPGA/assets/127822858/ca0da354-4c27-4e5a-bfae-a99b7f77ead5)
+
 ## Gumnut implementation
 
 Still under work.
