@@ -8,11 +8,11 @@ Main project in collaboration with *John Deere* for the undergrad course “**De
 
 It consists of a **John Deere tractor driving simulator via the Unity game engine**. The vehicle is controlled through the **DE10-Lite FPGA board programmed in VHDL**. The *accelerometer* represents the steering, the *switches* represent the Gear Selection and the *buttons* represent the Throttle and Brake. This information is sent via TTL/USB to the simulation running on a desktop or personal computer, which displays the corresponding tractor behavior on the monitor. Likewise, if an object is picked up in the video game, this data is sent via the above-mentioned channel to the board, which then shows the number of items picked up so far on a *7-segment display*.
 
-First implementation was done using *UART*, *debounce*, *BCD to 7 segments decoder* and *accelerometer* entities instantiated as components inside a board interface top-entity. Then, a *Gumnut* soft-core microprocessor was added so it would be possible to interact with all the interfaces (accelerometer, switches, buttons, displays, serial port) via *Assembly*.
+First implementation was done using *UART*, *debounce*, *BCD to 7 segments decoder* and *accelerometer* entities instantiated as components inside a board interface top-entity. Then, a *Gumnut* soft-core microprocessor was added so it would be possible to interact with all the interfaces (accelerometer, switches, buttons, displays, serial port) via *Gumnut Assembly* (*Gasm*).
 
 ## Gumnut-less implementation
 
-This part relies on a *Moore's Finite State Machine*. It transitions to the state of the current active input element, where it sends employing UART component a corresponding value, which is then decoded in the Unity *C#* script to perform the desired action.
+This part relies on a *Moore's Finite State Machine*. It transitions to the state of the current active input element, where it sends employing UART component a corresponding value, which is then decoded in the *Unity C#* script to perform the desired action.
 
 <p align="center">
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/c63962ac-0404-47f9-9ca1-4f194da40d04" alt = "FSM" width="518" height="291"/>
@@ -94,7 +94,65 @@ In conclusion, no data is transmitted during the IDLE state.
 
 ## Gumnut implementation
 
-Still under work.
+### RTL level design
+
+First, the Gumnut component was added to the top-entity, so the RTL diagram differs from the one shown above.
+
+### Gumnut component signals
+
+Gumnut has an *I/O interface* with which it receives / sends information from / to the top-entity and therefore from / to the interfaces. We want to introduce to the processor the data from *RX* (item counter in Unity), *switches*, *keys* and *accelerometer*.  It will perform the relevant operations and return the action code for each element, that is, the one interpreted by Unity, to be transmitted, as well as the transmission enable bit. In the case of RX, it will send the BCD code of the item counter to the 7-segment decoder that allows the display of that number.
+
+First, it is connected to the following input signals: *clk_i*, synchronization signal obtained from the internal clock of the board; *rst_i*, reset bit of the component.
+
+As part of the described bus are *port_ack_i* and *port_dat_i*. The first, a status signal indicating that the I/O port acknowledges the completion of an operation, which is set to a fixed value of one. The second, the 8-bit data read from the port, the latter addressed by an *inp instruction* in Gasm.
+
+On the other hand, the output signals are: port_cyc_o, a “cycle” control signal that indicates that a sequence of I/O port operations is in progress; port_stb_o, a “strobe” control signal that shows that an I/O port operation is occurring; port_we_o, a “write enable” control signal that indicates that the operation is an I/O port write; port_addr_o, the 8-bit I/O port address; port_dat_o, the 8-bit data written to the I/O port addressed by an *out instruction* in Gasm.
+
+### Inp and out operations
+
+Thus, in a Gasm **inp** operation, the first attribute is the register in which you want to store the data received by Gumnut from the top-entity and the second is the address of the receive port determined by the location of a byte in data memory.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/0dafd3f8-28f2-4d35-a309-0900c9204364" alt = "Operation of inp operation in Gasm" width="300" height="280"/>
+</p>
+
+When an inp is performed, Gumnut places on the rising edge of the clock signal the address in port_adr_o of the I/O port, will turn on port_cyc_o and port_stb_o, clear port_we_o to note that this is a port read, and receive the information from port_dat_i to be stored in the corresponding register. 
+
+In a Gasm **out** operation, the first attribute is the register from which the data Gumnut sends to the top-entity is retrieved and the second is the address of the sending port determined by the location of a byte in the data memory.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/13b5e513-8913-446b-abc7-288dfbbbe1c5" alt = "Operation of out operation in Gasm" width="300" height="280"/>
+</p>
+
+When an out is performed, Gumnut places on the rising edge of the clock signal the address in port_adr_o of the I/O port, will turn on port_cyc_o, port_stb_o and port_we_o, the latter to warn that it is a port write, and will send to information in port_dat_o to be fetched by the top-entity.
+
+### VHDL interfaces with Gumnut
+
+It is then necessary to define processes that recognize the meaning of such signals and perform the required interaction with the processor.
+
+The input processes to Gumnut can be described as follows: Its sensitivity list is composed of the internal clock of the board and the rst_i signal of the Gumnut component. If rst_i is 1, the signal destined to enter the component is cleared. Otherwise, and as there is a rising edge in the synchronization signal, the value of the port_adr_o, port_cyc_o, port_stb_o and port_we_o signals are checked. 
+
+port_cyc_o and port_stb_o must be 1 and port_we_o is 0, because an operation is being carried out and this is input. As specified, when Gumnut requests an input through the respective instruction, it places an address signal that depends on what is to be read, whether it is the RX data, the switches, the keys or the accelerometer, since all of them have different memory spaces.
+
+Also, each of these elements has its own input process, the difference being the port_adr_o condition. If port_adr_o is equal, together with the above signal specifications, to the address that corresponds to the element, it means that Gumnut wants to recover its value, and therefore the conditional allows its signal to be the one placed in port_dat_i, in other words, to be read by the processor.
+
+It should be noted that the same port_dat_i signal would have to be written from different processes, which is not allowed. So intermediate signals are used, of which one is selected to be assigned to port_dat_i depending on port_adr_o, or the element that Gumnut requires.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/25522978-cb10-46ce-a7e5-048a31f39717" alt = "Input interface" width="220" height="500"/>
+</p>
+
+On the other hand, the output processes from Gumnut differ from the previous ones only in the verification of the port_we_o signal, which must now be 1 because it is a write operation.
+
+When Gumnut performs an output through the respective instruction, it places a address signal that depends on what is to be output, either the TX data, the TX enable or the BCD code.
+
+In line with the above, each of these elements has its own output process. The distinction being the port_adr_o condition. If port_adr_o is equal, together with the above signal specifications, to the address that corresponds to the element, it means that Gumnut wants to return its value, and therefore the conditional allows its signal or port_dat_o to be the one placed in a signal of the top-entity
+
+Since the writing is to different signals, despite being carried out in different processes, it is not necessary to use a selection statute.
+
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/8f9a75aa-1f66-4644-9cfb-4591e7154967" alt = "Output interface" width="220" height="500"/>
+</p>
 
 ## Game Demos
 
@@ -109,6 +167,10 @@ Still under work.
 <p align="center">
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/52809685-ae9e-471b-bf5a-7fce4017ce11" alt = "Game Control Demo" width="518" height="291"/>
 </p>
+
+### Unity & FPGA Control with Gumnut
+
+
 
 ## Bonus - VGA Interface
 
