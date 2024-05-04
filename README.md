@@ -24,8 +24,7 @@ Five entities are handled, *interface* as the top-entity, *UART*, *Decoder_BCDTo
 *debounce* and *accelerometer*.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/73233dba-950d-4214-a62d-6b73cb9cb33d" alt = "RTL design diagram complete and broken down by entities" width="518" height="291"/>
-</p>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ea600568-abfe-430e-8470-184ec55b596f" alt = "RTL design diagram complete and broken down by entities" width="518" height="291"/>
 
 ### Top-entity
 
@@ -42,7 +41,7 @@ Therefore, the components (one UART, two debounce, one decoder and one accelerom
 The debounce components receive the inputs from the bounced buttons, *KEY(1:0)*, and debounce them. *key0_db* and *key1_db* capture the output of these components, and thus represent the state of the buttons after debouncing, so they will be used instead of their port equivalent.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ca0da354-4c27-4e5a-bfae-a99b7f77ead5" alt = "Signals on debounce components" width="400" height="150"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/cf3fac4e-f706-4f3e-b888-6e2863d6ffcf" alt = "Signals on debounce components" width="400" height="150"/>
 </p>
 
 ### Signals on UART component
@@ -50,7 +49,7 @@ The debounce components receive the inputs from the bounced buttons, *KEY(1:0)*,
 *reset_n_de10* is the reset signal of the UART entity, it is set to '1' to keep the protocol operating. *tx_ena_de10* enables data transmission. *tx_data_de10* contains the information to be transmitted. The *UART TX serial output* is connected to *GPIO_25* of the port. On the other hand, the *serial input RX* is connected to *GPIO_24*. *rx_data_de10* holds the received data.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/8d731252-3f1b-4406-a789-c2ebc5ebe235" alt = "Signals on UART component" width="400" height="150"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/6c34f5a3-9c36-48dc-af37-9619b49c2507" alt = "Signals on UART component" width="400" height="150"/>
 </p>
 
 ### Signals on accelerometer component
@@ -58,7 +57,7 @@ The debounce components receive the inputs from the bounced buttons, *KEY(1:0)*,
 The vector with the x-orientation of the board provided by the accelerometer is connected to *LEDR* of the port, i.e. to the LEDs of the device. However, LEDR is a buffer signal so its content can be read by the program. So it is assigned to the *acc_data_de10* signal, which is converted to unsigned integer and stored in *acc_data_de10_integer*. This way we obtain a number that represents the location of the DE10-lite.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/8a30bc9c-03b2-419b-af00-db5301977016" alt = "Signals on accelerometer component" width="300" height="290"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ae713323-710a-4f90-88d9-205f2ac1d15a" alt = "Signals on accelerometer component" width="300" height="290"/>
 </p>
 
 ### Signals on decoder component
@@ -66,7 +65,7 @@ The vector with the x-orientation of the board provided by the accelerometer is 
 Finally, the decoder receives the 4 least significant bits of *rx_data_of10*, that is, of the vector with the data received by serial communication, sent by Unity. When an object is collected, a counter is incremented and the latter is sent serially in hexadecimal format. The board receives it, connects it to the entity just mentioned, and carries out the decoding to show the number on the 7-segment displays, this with a dataflow model.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/119bbec1-9316-41cc-bccb-50ec59aeca0f" alt = "Signals on decoder component" width="400" height="360"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/161080d0-0a56-415e-96be-476c35e9aa33" alt = "Signals on decoder component" width="400" height="360"/>
 </p>
 
 ### Process of converting accelerometer data to a current orientation signal
@@ -74,7 +73,7 @@ Finally, the decoder receives the 4 least significant bits of *rx_data_of10*, th
 Now, the first clock-sensitive process pigeonholes the signal *acc_data_de10_integer* into a range and turns on a signal with the corresponding board orientation. In other words, a meaning is given to the orientation vector provided by the accelerometer, knowing that the accelerometer behaves in such a way that one or two LEDs move laterally depending on the rotation of the DE10-lite.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/4291b609-3acc-4795-bfb5-c4a42b914d62" alt = "Process of converting accelerometer data to a current orientation signal" width="300" height="250"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/1117d752-2fe4-40f6-913e-a8be95fba7c5" alt = "Process of converting accelerometer data to a current orientation signal" width="300" height="250"/>
 </p>
 
 ## Gumnut implementation
