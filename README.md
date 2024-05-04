@@ -154,7 +154,7 @@ In line with the above, each of these elements has its own output process. The d
 Since the writing is to different signals, despite being carried out in different processes, it is not necessary to use a selection statute.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="480" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="450" height="500"/>
 </p>
 
 ### Code in Gumnut Assembly
@@ -172,7 +172,7 @@ If any of these operations does not turn on the flag Z (zero) flag, it means tha
 The same applies for the accelerometer vector, where the masks represent all possible combinations, some being pigeonholed on the right and the remaining ones on the right.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/c3525645-80aa-4116-a1fc-3b52ac3c3852" alt = "Identifying the accelerometer orientation in Gasm" width="350" height="350"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/c3525645-80aa-4116-a1fc-3b52ac3c3852" alt = "Identifying the accelerometer orientation in Gasm" width="400" height="400"/>
 </p>
 
 As for the buttons, the mask is simply 1, because of the 8 bits received by Gumnut, only LSB has the information whether it is pressed or not. This is because port_dat_i is assigned seven zeros concatenated to the debounce signal value.
