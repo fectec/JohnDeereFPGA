@@ -98,6 +98,9 @@ In conclusion, no data is transmitted during the IDLE state.
 
 First, the Gumnut component was added to the top-entity, so the RTL diagram differs from the one shown above.
 
+<p align="center">
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/57bee814-b5d4-4f72-bd50-35e1b577f223" alt = "RTL design diagram complete and broken down by entities" width="518" height="291"/>
+  
 ### Gumnut component signals
 
 Gumnut has an *I/O interface* with which it receives / sends information from / to the top-entity and therefore from / to the interfaces. We want to introduce to the processor the data from *RX* (item counter in Unity), *switches*, *keys* and *accelerometer*.  It will perform the relevant operations and return the action code for each element, that is, the one interpreted by Unity, to be transmitted, as well as the transmission enable bit. In the case of RX, it will send the BCD code of the item counter to the 7-segment decoder that allows the display of that number.
@@ -121,7 +124,7 @@ When an inp is performed, Gumnut places on the rising edge of the clock signal t
 In a Gasm **out** operation, the first attribute is the register from which the data Gumnut sends to the top-entity is retrieved and the second is the address of the sending port determined by the location of a byte in the data memory.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/13b5e513-8913-446b-abc7-288dfbbbe1c5" alt = "Operation of out operation in Gasm" width="300" height="280"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/13b5e513-8913-446b-abc7-288dfbbbe1c5" alt = "Operation of out operation in Gasm" width="400" height="280"/>
 </p>
 
 When an out is performed, Gumnut places on the rising edge of the clock signal the address in port_adr_o of the I/O port, will turn on port_cyc_o, port_stb_o and port_we_o, the latter to warn that it is a port write, and will send to information in port_dat_o to be fetched by the top-entity.
@@ -139,7 +142,7 @@ Also, each of these elements has its own input process, the difference being the
 It should be noted that the same port_dat_i signal would have to be written from different processes, which is not allowed. So intermediate signals are used, of which one is selected to be assigned to port_dat_i depending on port_adr_o, or the element that Gumnut requires.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/25522978-cb10-46ce-a7e5-048a31f39717" alt = "Input interface" width="300" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/25522978-cb10-46ce-a7e5-048a31f39717" alt = "Input interface" width="400" height="500"/>
 </p>
 
 On the other hand, the output processes from Gumnut differ from the previous ones only in the verification of the port_we_o signal, which must now be 1 because it is a write operation.
