@@ -154,7 +154,7 @@ In line with the above, each of these elements has its own output process. The d
 Since the writing is to different signals, despite being carried out in different processes, it is not necessary to use a selection statute.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="400" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/e4317e48-9c64-4870-adde-1302f0b7d02d" alt = "Input interface" width="480" height="500"/>
 </p>
 
 ### Code in Gumnut Assembly
@@ -188,7 +188,7 @@ If all operations cause the Z flag to be set, i.e. their results are zero, it me
 On the other hand, any operation that does not result in zero will jump to a label where the respective value will be transmitted to the active element, i.e. the one decoded by the Unity engine.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/46dcc057-f8a5-4d44-b85b-1d9e00e291e0" alt = "Transfer of the respective value to the active element" width="500" height="500"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/46dcc057-f8a5-4d44-b85b-1d9e00e291e0" alt = "Transfer of the respective value to the active element" width="400" height="400"/>
 
 For the RX data or item counter, it will be received and sent back to the top-entity for decoding.
 
