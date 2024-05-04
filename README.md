@@ -58,7 +58,7 @@ The debounce components receive the inputs from the bounced buttons, *KEY(1:0)*,
 The vector with the x-orientation of the board provided by the accelerometer is connected to *LEDR* of the port, i.e. to the LEDs of the device. However, LEDR is a buffer signal so its content can be read by the program. So it is assigned to the *acc_data_de10* signal, which is converted to unsigned integer and stored in *acc_data_de10_integer*. This way we obtain a number that represents the location of the DE10-lite.
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/8a30bc9c-03b2-419b-af00-db5301977016" alt = "Signals on accelerometer component" width="400" height="390"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/8a30bc9c-03b2-419b-af00-db5301977016" alt = "Signals on accelerometer component" width="300" height="290"/>
 </p>
 
 ### Signals on decoder component
