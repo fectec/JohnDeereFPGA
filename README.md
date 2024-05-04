@@ -89,7 +89,7 @@ The action corresponding to all states excluding IDLE is to turn off the signal 
 In conclusion, no data is transmitted during the IDLE state. 
 
 <p align="center">
-  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ae6841e3-69f3-4d1b-80a4-29260a26c19c" alt = "State machine process for selection and transmission of information" width="400" height="150"/>
+  <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/ae6841e3-69f3-4d1b-80a4-29260a26c19c" alt = "State machine process for selection and transmission of information" width="600" height="200"/>
 </p>
 
 ## Gumnut implementation
