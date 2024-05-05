@@ -1,0 +1,164 @@
+        text
+        
+        org 0x000       ; 	Start here on reset
+        jmp inputs
+        
+; Data memory layout
+
+        data
+        
+        TX_Data_o       :       bss 1   ; Data memory address : 000
+        TX_Start_o      :       bss 1   ; Data memory address : 001
+        BCD_o           :       bss 1   ; Data memory address : 010
+        
+        RX_Data_i       :       bss 1   ; Data memory address : 011
+        SWITCHES_i      :       bss 1   ; Data memory address : 100
+        KEY_0_i         :       bss 1   ; Data memory address : 101
+        KEY_1_i         :       bss 1   ; Data memory address : 110
+        ACC_i           :       bss 1   ; Data memory address : 111
+        
+        ONE             :       byte 1
+        TWO             :       byte 2
+        THREE           :       byte 3
+        FOUR            :       byte 4
+        FIVE            :       byte 5
+        SIX             :       byte 6
+        SEVEN           :       byte 7
+        EIGHT           :       byte 8
+        NINE            :       byte 9
+        TEN             :       byte 10
+
+; Main program
+        
+        text
+        org 0x010
+        
+        inputs          :       inp r1, RX_Data_i       ;       Read RX data / items counter
+                                out r1, BCD_o           ;       Output items counter / BCD code
+
+
+                                inp r1, SWITCHES_i      ;       Read SWITCHES
+                                
+                                and r0, r1, 1
+                                bnz SWITCHES_0_Eq_1     ;       If SWITCHES_0 is pressed jump to SWITCHES_0_Eq_1
+                                                        ;       First gear 
+                                
+                                and r0, r1, 2
+                                bnz SWITCHES_1_Eq_1     ;       If SWITCHES_1 is pressed jump to SWITCHES_1_Eq_1
+                                                        ;       Second gear
+                                
+                                and r0, r1, 4
+                                bnz SWITCHES_2_Eq_1     ;       If SWITCHES_2 is pressed jump to SWITCHES_2_Eq_1
+                                                        ;       Third gear
+                                
+                                and r0, r1, 8
+                                bnz SWITCHES_3_Eq_1     ;       If SWITCHES_3 is pressed jump to SWITCHES_3_Eq_1
+                                                        ;       Fourth gear
+                                
+                                and r0, r1, 16
+                                bnz SWITCHES_4_Eq_1     ;       If SWITCHES_4 is pressed jump to SWITCHES_4_Eq_1
+                                                        ;       Fifth gear
+                                
+                                and r0, r1, 32                  
+                                bnz SWITCHES_5_Eq_1     ;       If SWITCHES_5 is pressed jump to SWITCHES_5_Eq_1
+                                                        ;       Reverse gear
+                                
+                                inp r1, KEY_0_i         ;       Read KEY 0
+                                and r0, r1, 1
+                                bnz KEY_0_Eq_1          ;       If KEY 0 is pressed jump to KEY_0_Eq_1
+                                                        ;       Throttle
+                                
+                                inp r1, KEY_1_i         ;       Read KEY 1
+                                and r0, r1, 1
+                                bnz KEY_1_Eq_1          ;       If KEY 1 is pressed jump to KEY_1_Eq_1
+                                                        ;       Brake
+                                                                                
+                                inp r1, ACC_i           ;       Read accelerometer
+                                
+                                ; If accelerometer is oriented towards right jump to ACC_Eq_Right
+                                
+                                and r0, r1, 1
+                                bnz ACC_Eq_Right
+                                
+                                and r0, r1, 3
+                                bnz ACC_Eq_Right
+                                
+                                and r0, r1, 2
+                                bnz ACC_Eq_Right
+                                
+                                and r0, r1, 6
+                                bnz ACC_Eq_Right
+                                
+                                and r0, r1, 4
+                                bnz ACC_Eq_Right
+                                
+                                ; If accelerometer is oriented towards left jump to ACC_Eq_Left
+                                
+                                and r0, r1, 32
+                                bnz ACC_Eq_Left
+                                
+                                and r0, r1, 96
+                                bnz ACC_Eq_Left
+                                
+                                and r0, r1, 64
+                                bnz ACC_Eq_Left
+                                
+                                and r0, r1, 192
+                                bnz ACC_Eq_Left
+                                
+                                and r0, r1, 128
+                                bnz ACC_Eq_Left
+                                
+                                ; If accelerometer is oriented towards center jump to IDLE
+                                 
+                                jmp IDLE                        ;       IDLE (No inputs)
+                                                                                                                                        
+        SWITCHES_0_Eq_1 :       ldm r1, ONE
+                                out r1, TX_Data_o               ;       Transmit 0x01
+                                jmp En_D_TX
+                                                
+        SWITCHES_1_Eq_1 :       ldm r1, TWO
+                                out r1, TX_Data_o               ;       Transmit 0x02
+                                jmp En_D_TX
+        
+        SWITCHES_2_Eq_1 :       ldm r1, THREE
+                                out r1, TX_Data_o               ;       Transmit 0x03
+                                jmp En_D_TX
+
+
+        SWITCHES_3_Eq_1 :       ldm r1, FOUR
+                                out r1, TX_Data_o               ;       Transmit 0x04
+                                jmp En_D_TX
+        
+        SWITCHES_4_Eq_1 :       ldm r1, FIVE
+                                out r1, TX_Data_o               ;       Transmit 0x05
+                                jmp En_D_TX
+        
+        SWITCHES_5_Eq_1 :       ldm r1, SIX
+                                out r1, TX_Data_o               ;       Transmit 0x06
+                                jmp En_D_TX
+                                                                
+        KEY_0_Eq_1      :       ldm r1, SEVEN                           
+                                out r1, TX_Data_o               ;       Transmit 0x07
+                                jmp En_D_TX                                     
+        
+        KEY_1_Eq_1      :       ldm r1, EIGHT
+                                out r1, TX_Data_o               ;       Transmit 0x08
+                                jmp En_D_TX     
+                                                                
+        ACC_Eq_Right    :       ldm r1, NINE                    ;       Transmit 0x09
+                                out r1, TX_Data_o
+                                jmp En_D_TX             
+        
+        ACC_Eq_Left     :       ldm r1, TEN                     ;       Transmit 0xA
+                                out r1, TX_Data_o
+                                jmp En_D_TX     
+         
+        IDLE            :       out r0, TX_Data_o               ;       Transmit 0x00
+        
+        En_D_TX         :       out r0, TX_Start_o              ;       Enable transmission
+                                ldm r1, ONE     
+                                out r1, TX_Start_o              ;       Disable transmission
+                                                        
+                                jmp inputs
+                               

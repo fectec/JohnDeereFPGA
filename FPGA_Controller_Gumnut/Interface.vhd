@@ -32,7 +32,7 @@ ARCHITECTURE Structural OF interface IS
 		GENERIC ( 
 					IMem_file_name	: STRING := "gasm_text.dat";
 					DMem_file_name	: STRING := "gasm_data.dat";
-					debug 			: BOOLEAN := false 
+					debug 		: BOOLEAN := false 
 				);
 			
 		PORT	( 
@@ -49,7 +49,7 @@ ARCHITECTURE Structural OF interface IS
 					PORT_dat_o 	: OUT	STD_LOGIC_VECTOR(7 DOWNTO 0);
 					PORT_dat_i 	: IN	STD_LOGIC_VECTOR(7 DOWNTO 0);
 					
-					-- INterrupts
+					-- Interrupts
 					
 					Int_req : IN STD_LOGIC;
 					Int_ack : OUT STD_LOGIC
@@ -60,9 +60,9 @@ ARCHITECTURE Structural OF interface IS
 	COMPONENT uart IS
 
 		GENERIC (
-				 clk_freq  	:  integer    := 50_000_000;  -- Frequency of system clock IN Hertz
-				 baud_rate 	:  integer    := 115_200;     -- Data lINk baud rate IN bits/second
-				 os_rate   	:  integer    := 16;          -- OversamplINg rate to fINd center of receive bits (IN samples per baud period)
+				 clk_freq  	:  integer    := 50_000_000;  -- Frequency of system clock in Hertz
+				 baud_rate 	:  integer    := 115_200;     -- Data link baud rate in bits/second
+				 os_rate   	:  integer    := 16;          -- Oversampling rate to find center of receive bits (in samples per baud period)
 				 d_width   	:  integer    := 8;           -- Data bus width
 				 parity    	:  integer    := 0;           -- 0 for no parity, 1 for parity
 				 parity_eo 	:  STD_LOGIC  := '0'          -- '0' for even, '1' for odd parity
@@ -71,14 +71,14 @@ ARCHITECTURE Structural OF interface IS
 		PORT	(
 				 clk     	:  IN   STD_LOGIC;                             	-- System clock
 				 reset_n  	:  IN   STD_LOGIC;                             	-- Ascynchronous reset
-				 tx_ena   	:  IN   STD_LOGIC;                             	-- INitiate transmission
+				 tx_ena   	:  IN   STD_LOGIC;                             	-- Iitiate transmission
 				 tx_data  	:  IN   STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data to transmit
-				 rx       	:  IN   STD_LOGIC;                             	-- Receive pIN
-				 rx_busy  	:  OUT  STD_LOGIC;                             	-- Data reception IN progress, LEDR(9)
+				 rx       	:  IN   STD_LOGIC;                             	-- Receive pin
+				 rx_busy  	:  OUT  STD_LOGIC;                             	-- Data reception in progress, LEDR(9)
 				 rx_error 	:  OUT  STD_LOGIC;                             	-- Start, parity, or stop bit error detected
 				 rx_data  	:  OUT  STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  	-- Data received
-				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission IN progress, LEDR(8)
-				 tx       	:  OUT  STD_LOGIC								-- Transmit pIN
+				 tx_busy  	:  OUT  STD_LOGIC;                            	-- Transmission in progress, LEDR(8)
+				 tx       	:  OUT  STD_LOGIC				-- Transmit pin
 			); 
 				
 	END COMPONENT uart;
@@ -138,7 +138,8 @@ ARCHITECTURE Structural OF interface IS
 	-- Decoder
 
 	SIGNAL bcd_i				:	STD_LOGIC_VECTOR(3 DOWNTO 0);
-	
+	SIGNAL rx_done                          :       STD_LOGIC       := '0';    
+        
 	-- RX data
 	
 	SIGNAL RX_inp				:	STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -209,13 +210,12 @@ BEGIN
 
 	-- Gumnut & interfaces interaction
 	
-	-- Output => TX Data -> Data memory address	:		0x000
+	-- Output => TX Data -> Data memory address	:		000
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
 			IF rst_i = '1' THEN
 				
-				--LEDR(7 DOWNTO 0) <= ( OTHERS => '0' );
 				tx_data_de10 <= ( OTHERS => '0' );
 
 			ELSIF RISING_EDGE( CLOCK_50 ) THEN
@@ -226,14 +226,13 @@ BEGIN
 				AND	port_we_o  = '1'	-- Write
 				THEN
 				
-					--LEDR(7 DOWNTO 0) <= port_dat_o;
 					tx_data_de10 <= port_dat_o;
 					
 				END IF;
 			END IF;
 	END PROCESS;
 	
-	-- Output => TX Start -> Data memory address	:	0x001
+	-- Output => TX Start -> Data memory address	:	        001
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -255,7 +254,7 @@ BEGIN
 			END IF;
 	END PROCESS;
 	
-	-- Output => Displays -> Data memory address	:	0x010		
+	-- Output => Displays -> Data memory address	:	        010		
 			
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -278,7 +277,7 @@ BEGIN
 			END IF;
 	END PROCESS;	
 	
-	-- Input => RX Data -> Data memory address 		:	0x011
+	-- Input => RX Data -> Data memory address      :               011
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -293,14 +292,14 @@ BEGIN
 				AND	port_stb_o = '1'	
 				AND	port_we_o  = '0'	
 				THEN
-		
-					RX_inp <= "0000000" & rx_data_de10(0);
+                                        
+                                        RX_inp <= rx_data_de10;
 					
 				END IF;
 			END IF;
 	END PROCESS;
 	
-	-- Input => SWITCHES -> Data memory address		:	0x100
+	-- Input => SWITCHES -> Data memory address     :	        100
 
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -322,7 +321,7 @@ BEGIN
 			END IF;
 	END PROCESS;	
 	
-	-- Input => KEY 0 -> Data memory address		:	0x101	
+	-- Input => KEY 0 -> Data memory address        :	        101	
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -344,7 +343,7 @@ BEGIN
 			END IF;
 	END PROCESS;
 
-	-- Input => KEY 1 -> Data memory address		:	0x110	
+	-- Input => KEY 1 -> Data memory address        :               110	
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -366,7 +365,7 @@ BEGIN
 			END IF;
 	END PROCESS;
 	
-	-- Input => Accelerometer -> Data memory address	:	0x111	
+	-- Input => Accelerometer -> Data memory address        :       111	
 	
 	PROCESS ( CLOCK_50, rst_i )
 		BEGIN
@@ -398,5 +397,5 @@ BEGIN
 				key1_inp 	WHEN "00000110",
 				acc_inp		WHEN "00000111",
 				UNAFFECTED WHEN OTHERS;
-
+                                
 END Structural;
