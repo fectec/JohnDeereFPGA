@@ -145,7 +145,7 @@ It should be noted that the same port_dat_i signal would have to be written from
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/25522978-cb10-46ce-a7e5-048a31f39717" alt = "Input interface" width="400" height="500"/>
 </p>
 
-On the other hand, the output processes from Gumnut differ from the previous ones only in the verification of the port_we_o signal, which must now be 1 because it is a write operation.
+On the contrary, the output processes from Gumnut differ from the previous ones only in the verification of the port_we_o signal, which must now be 1 because it is a write operation.
 
 When Gumnut performs an output through the respective instruction, it places a address signal that depends on what is to be output, either the TX data, the TX enable or the BCD code.
 
@@ -185,7 +185,7 @@ If all operations cause the Z flag to be set, i.e. their results are zero, it me
 <p align="center">
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/43c8d27e-aa95-4055-a019-93a0a8106059" alt = "IDLE and En_D_Tx tag" width="380" height="100"/>
 
-On the other hand, any operation that does not result in zero will jump to a label where the respective value will be transmitted to the active element, i.e. the one decoded by the Unity engine.
+Inversely, any operation that does not result in zero will jump to a label where the respective value will be transmitted to the active element, i.e. the one decoded by the Unity engine.
 
 <p align="center">
   <img src="https://github.com/fectec/JohnDeereFPGA/assets/127822858/46dcc057-f8a5-4d44-b85b-1d9e00e291e0" alt = "Transfer of the respective value to the active element" width="400" height="400"/>
