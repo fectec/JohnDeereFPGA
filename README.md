@@ -1,4 +1,4 @@
-# JohnDeereFPGA
+# John Deere FPGA
 
 <p align="justify">Main project in collaboration with <b>John Deere</b> for the undergrad course "<b>Design with Programmable Logic</b>", which delves into programmable logic devices, with an FPGA as the main tool in which digital designs were developed and tested.</p>
 
